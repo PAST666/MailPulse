@@ -2,6 +2,6 @@ from django.shortcuts import render
 from django.views.generic import View
 
 class MainView(View):
-    pass
+    def get(self, request):
+        return render(request, 'mailings/main.html')
 
-# Create your views here.
