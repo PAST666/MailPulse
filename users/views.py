@@ -12,7 +12,7 @@ def login_view(request):
             return redirect('main')
         else:
             messages.error(request, 'Неверные учетные данные')
-    return render(request, 'login.html')
+    return render(request, 'users/login.html')
 
 def logout_view(request):
     logout(request)

@@ -8,8 +8,8 @@ class Mailing(models.Model):
     time_of_first_send = models.DateTimeField('Дата и время первой отправки', auto_now_add=True)
     time_of_last_send = models.DateTimeField('Дата и время последней отправки', auto_now_add=True)
     status = models.BooleanField('Статус')
-    message = models.ForeignKey("Message", on_delete=models.CASCADE)
-    recipients = models.ManyToManyField('Получатель рассылки', 'MessageRecipient')
+    message = models.ForeignKey('Message', on_delete=models.CASCADE)
+    recipients = models.ManyToManyField('MessageRecipient', related_name='Mailing')
 
     class Meta:
         verbose_name = 'Рассылка'
@@ -56,14 +56,29 @@ class MailAttempt(models.Model):
 
 class User(AbstractUser):
     email = models.EmailField('Почта', max_length=MAX_NAME_LENGTH, unique=True)    
-    profile_picture = models.ImageField(
-        "Аватарка",
-        upload_to="avatars/",
-        blank=True,
-        null=True,
-    )
+    # profile_picture = models.ImageField(
+    #     "Аватарка",
+    #     upload_to="avatars/",
+    #     blank=True,
+    #     null=True,
+    # )
     phone_number = models.IntegerField('Телефон')
     country = models.CharField('Страна', max_length=MAX_NAME_LENGTH)
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='mailings_user_set',
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups',
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='mailings_user_set',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
+    )   
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Пользователь'

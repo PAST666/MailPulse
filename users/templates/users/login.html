@@ -1,23 +1,33 @@
-<div class='container py-4'>
-    <div class='row'>
-        <section class='col-12 mb-4'>
-            <h2>Логин</h2>
-            <form method='post'>
-            {% csrf_token %}
-            <input
-                type='text'
-                name='username'
-                placeholder='Имя пользователя'
-                class='form-control'
-            />
-            <input
-                type='password'
-                name='password'
-                placeholder='Пароль'
-                class='form-control mt-3'
-            />
-            <button type='submit' class='btn btn-primary mt-3'>Войти</button>
-            </form>
-        </section>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class='container py-4'>
+        <div class='row'>
+            <section class='col-12 mb-4'>
+                <h2>Логин</h2>
+                <form method='post'>
+                {% csrf_token %}
+                <input
+                    type='text'
+                    name='username'
+                    placeholder='Имя пользователя'
+                    class='form-control'
+                />
+                <input
+                    type='password'
+                    name='password'
+                    placeholder='Пароль'
+                    class='form-control mt-3'
+                />
+                <button type='submit' class='btn btn-primary mt-3'>Войти</button>
+                </form>
+            </section>
+        </div>
+    </div>    
+</body>
+</html>
