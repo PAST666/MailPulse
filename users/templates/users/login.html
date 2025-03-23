@@ -11,20 +11,9 @@
             <section class='col-12 mb-4'>
                 <h2>Логин</h2>
                 <form method='post'>
-                {% csrf_token %}
-                <input
-                    type='text'
-                    name='username'
-                    placeholder='Имя пользователя'
-                    class='form-control'
-                />
-                <input
-                    type='password'
-                    name='password'
-                    placeholder='Пароль'
-                    class='form-control mt-3'
-                />
-                <button type='submit' class='btn btn-primary mt-3'>Войти</button>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Войти</button>
                 </form>
             </section>
         </div>

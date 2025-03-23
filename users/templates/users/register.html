@@ -15,9 +15,7 @@
                 {% endif %}
                 <form method="post">
                     {% csrf_token %}
-                    <input type="text" name="username" placeholder="Имя пользователя" class="form-control mb-3" required>
-                    <input type="password" name="password" placeholder="Пароль" class="form-control mb-3" required>
-                    <input type="password" name="confirm_password" placeholder="Подтвердите пароль" class="form-control mb-3" required>
+                    {{ form.as_p }}
                     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
                 </form>
             </section>
