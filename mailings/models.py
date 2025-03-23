@@ -77,7 +77,7 @@ class User(AbstractUser):
         blank=True,
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
-    )   
+    )
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     class Meta:
