@@ -1,88 +1,65 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 MAX_NAME_LENGTH = 150
 MAX_TEXT_LENGTH = 255
 
+
 class Mailing(models.Model):
-    time_of_first_send = models.DateTimeField('Дата и время первой отправки', auto_now_add=True)
-    time_of_last_send = models.DateTimeField('Дата и время последней отправки', auto_now_add=True)
-    status = models.BooleanField('Статус')
-    message = models.ForeignKey('Message', on_delete=models.CASCADE)
-    recipients = models.ManyToManyField('MessageRecipient', related_name='Mailing')
+    time_of_first_send = models.DateTimeField(
+        "Дата и время первой отправки"
+    )
+    time_of_last_send = models.DateTimeField(
+        "Дата и время последней отправки"
+    )
+    status = models.CharField("Статус", max_length=MAX_NAME_LENGTH)
+    message = models.ForeignKey("Message", on_delete=models.CASCADE)
+    recipients = models.ManyToManyField("MessageRecipient")
+    owner = models.ForeignKey('User', on_delete=models.CASCADE, related_name='owner_mailings')
 
     class Meta:
-        verbose_name = 'Рассылка'
-        verbose_name_plural = 'Рассылки'
-    
+        verbose_name = "Рассылка"
+        verbose_name_plural = "Рассылки"
+
     def __str__(self):
         return self.name
+
 
 class Message(models.Model):
-    message_title = models.CharField('Заголовок', max_length=MAX_NAME_LENGTH)
-    message_text = models.CharField('Текст сообщения', max_length=MAX_TEXT_LENGTH)
+    message_title = models.CharField("Заголовок", max_length=MAX_NAME_LENGTH)
+    message_text = models.CharField("Текст сообщения", max_length=MAX_TEXT_LENGTH)
 
     class Meta:
-        verbose_name = 'Сообщение'
-        verbose_name_plural = 'Сообщения'
-    
+        verbose_name = "Сообщение"
+        verbose_name_plural = "Сообщения"
+
     def __str__(self):
         return self.name
 
+
 class MessageRecipient(models.Model):
-    email = models.EmailField('Почта', max_length=MAX_NAME_LENGTH, unique=True)
-    full_name = models.CharField('ФИО', max_length=MAX_NAME_LENGTH)
-    comment = models.TextField('Комментарий')
+    email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
+    name = models.CharField("ФИО", max_length=MAX_NAME_LENGTH)
+    middle_name = models.CharField("ФИО", max_length=MAX_NAME_LENGTH)
+    surname = models.CharField("ФИО", max_length=MAX_NAME_LENGTH)
+    comment = models.TextField("Комментарий")
 
     class Meta:
-        verbose_name = 'Получатель сообщения'
-        verbose_name_plural = 'Получатели сообщений'
-    
+        verbose_name = "Получатель"
+        verbose_name_plural = "Получатели"
+
     def __str__(self):
-        return self.name  
+        return self.name
+
 
 class MailAttempt(models.Model):
-    time_of_attempt = models.DateTimeField('Дата и время попытки', auto_now_add=True)
-    status = models.BooleanField('Статус')
-    answer = models.CharField('Ответ', max_length=MAX_TEXT_LENGTH)
-    mailing = models.ForeignKey("Mailing", on_delete=models.CASCADE)    
+    time_of_attempt = models.DateTimeField("Дата и время попытки", auto_now_add=True)
+    status = models.CharField("Статус", max_length=MAX_NAME_LENGTH)
+    answer = models.CharField("Ответ", max_length=MAX_TEXT_LENGTH)
+    mailing = models.ForeignKey("Mailing", on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'Попытка рассылки'
-        verbose_name_plural = 'Попытки рассылки'
-    
-    def __str__(self):
-        return self.name    
+        verbose_name = "Попытка рассылки"
+        verbose_name_plural = "Попытки рассылки"
 
-class User(AbstractUser):
-    email = models.EmailField('Почта', max_length=MAX_NAME_LENGTH, unique=True)    
-    # profile_picture = models.ImageField(
-    #     "Аватарка",
-    #     upload_to="avatars/",
-    #     blank=True,
-    #     null=True,
-    # )
-    phone_number = models.IntegerField('Телефон')
-    country = models.CharField('Страна', max_length=MAX_NAME_LENGTH)
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='mailings_user_set',
-        blank=True,
-        help_text='The groups this user belongs to.',
-        verbose_name='groups',
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='mailings_user_set',
-        blank=True,
-        help_text='Specific permissions for this user.',
-        verbose_name='user permissions',
-    )
-    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-    
     def __str__(self):
-        return self.name  
+        return self.name

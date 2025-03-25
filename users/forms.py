@@ -6,21 +6,23 @@ from django.contrib.auth.forms import (
     PasswordChangeForm,
 )
 from django.core.exceptions import ValidationError
-from django.contrib.auth import get_user_model
-
+from users.models import User
 
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Имя пользователя"}
+            attrs={"class": "form-control",
+                   "placeholder": "Имя пользователя"
+                   }
         )
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Пароль"}
+            attrs={"class": "form-control",
+                   "placeholder": "Пароль"
+                   }
         )
     )
-
 
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
@@ -46,17 +48,16 @@ class CustomUserCreationForm(UserCreationForm):
     )
 
     class Meta:
-        model = get_user_model()
-        fields = ("username", "email", "password1", "password2")
+        model = User
+        fields = ("username", "email", "email", "phone_number", "password1", "password2")
 
     def clean_email(self):
         email = self.cleaned_data["email"]
-        if get_user_model().objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             raise ValidationError(
                 "Данный адрес электронной почты уже зарегистрирован в системе"
             )
         return email
-
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
