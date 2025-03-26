@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 MAX_NAME_LENGTH = 150
 MAX_TEXT_LENGTH = 255
@@ -14,7 +15,7 @@ class Mailing(models.Model):
     status = models.CharField("Статус", max_length=MAX_NAME_LENGTH)
     message = models.ForeignKey("Message", on_delete=models.CASCADE)
     recipients = models.ManyToManyField("MessageRecipient")
-    owner = models.ForeignKey('User', on_delete=models.CASCADE, related_name='owner_mailings')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='mailings')
 
     class Meta:
         verbose_name = "Рассылка"
@@ -27,6 +28,7 @@ class Mailing(models.Model):
 class Message(models.Model):
     message_title = models.CharField("Заголовок", max_length=MAX_NAME_LENGTH)
     message_text = models.CharField("Текст сообщения", max_length=MAX_TEXT_LENGTH)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages')
 
     class Meta:
         verbose_name = "Сообщение"
@@ -42,6 +44,7 @@ class MessageRecipient(models.Model):
     middle_name = models.CharField("ФИО", max_length=MAX_NAME_LENGTH)
     surname = models.CharField("ФИО", max_length=MAX_NAME_LENGTH)
     comment = models.TextField("Комментарий")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='recipients')
 
     class Meta:
         verbose_name = "Получатель"
