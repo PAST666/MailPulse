@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 MAX_NAME_LENGTH = 150
 
 class User(AbstractUser):
+    first_name = models.CharField("Имя", max_length=MAX_NAME_LENGTH, null=True, blank=True)
+    last_name = models.CharField("Фамилия", max_length=MAX_NAME_LENGTH, null=True, blank=True)
     email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
     photo = models.ImageField(
         "Аватарка",
@@ -25,4 +27,4 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
-        return self.name
+        return self.username

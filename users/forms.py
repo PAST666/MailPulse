@@ -75,3 +75,20 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             attrs={"class": "form-control", "placeholder": "Подтверждение нового пароля"}
         )
     )
+
+class ProfileUserForm(forms.ModelForm):
+    username = forms.CharField(disabled=True, label='Логин', widget=forms.TextInput(attrs={'class':'form-input'}))
+    email = forms.CharField(disabled=True, label='E-mail', widget=forms.TextInput(attrs={'class':'form-input'}))
+
+    class Meta:
+        model = User
+        fields = ['username', "first_name", "last_name", "email", "phone_number", "photo"]
+        labels = {
+            'first_name' : 'Имя',
+            'last_name' : 'Фамилия',
+        }
+
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-input'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+        }
