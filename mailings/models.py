@@ -56,7 +56,8 @@ class MessageRecipient(models.Model):
 
 class MailAttempt(models.Model):
     time_of_attempt = models.DateTimeField("Дата и время попытки", auto_now_add=True)
-    status = models.CharField("Статус", max_length=MAX_NAME_LENGTH)
+    # TODO кортеж из 
+    status = models.CharField("Статус", choices=(), max_length=MAX_NAME_LENGTH)
     answer = models.CharField("Ответ", max_length=MAX_TEXT_LENGTH)
     mailing = models.ForeignKey("Mailing", on_delete=models.CASCADE)
 

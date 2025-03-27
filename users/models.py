@@ -11,8 +11,8 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    phone_number = models.IntegerField("Телефон")
-    country = models.CharField("Страна", max_length=MAX_NAME_LENGTH)
+    phone_number = models.IntegerField("Телефон", null=True, blank=True)
+    country = models.CharField("Страна", max_length=MAX_NAME_LENGTH, null=True, blank=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 

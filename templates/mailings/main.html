@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная</title>
+</head>
+<body>
+    <h1>Это главная страница</h1>
+    {% if not user.is_authenticated %}
+    <li class="nav-item">
+        <a class="nav-link  text-white" href="{% url 'login' %}">Вход</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+    </li>
+    {% else %}
+            <ul class="dropdown-menu">
+                {% comment %} <li><a class="dropdown-item  text-white" href="carts/cart.html">Корзина</a></li>
+                <li><a class="dropdown-item  text-white" href="{% url "user:profile" %}">Личный кабинет</a>
+                </li>{% endcomment %}
+                {% if user.is_admin or user.is_staff %}
+                    <li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li>
+                {% endif %}
+                {% comment %}
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item  text-white" href="{% url 'logout' %}">Мой профиль</a></li> {% endcomment %}
+                <li class="nav-item">
+                    <span class="nav-link">{{ user.username }}</span>
+                </li>
+                {% comment %} <li><a class="dropdown-item  text-white" href="{% url 'logout' %}">Выйти</a></li> {% endcomment %}
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Выйти</button>
+                </form>
+            </ul>
+
+    {% endif %}
+</body>
+</html>
