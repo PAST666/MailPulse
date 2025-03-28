@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import uuid
+from django.utils.timezone import now
 
 MAX_NAME_LENGTH = 150
 
@@ -15,6 +17,9 @@ class User(AbstractUser):
     )
     phone_number = models.IntegerField("Телефон", null=True, blank=True)
     country = models.CharField("Страна", max_length=MAX_NAME_LENGTH, null=True, blank=True)
+    is_email_verified = models.BooleanField(default=False)
+    email_verification_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    email_verification_token_created = models.DateTimeField(auto_now_add=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
