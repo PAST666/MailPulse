@@ -19,7 +19,7 @@ class CustomLogoutView(LogoutView):
 class CustomRegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'users/register.html'
-    success_url = reverse_lazy('main')
+    success_url = reverse_lazy('login')
 
 class ProfileUser(LoginRequiredMixin, UpdateView):
     model = User
@@ -28,7 +28,7 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
     extra_context = {'title':'Регистрация'}
 
     def get_success_url(self) -> str:
-        return reverse_lazy('users:profile',args=[self.request.user.pk])
+        return reverse_lazy('users:profile', args=[self.request.user.pk])
 
 
 

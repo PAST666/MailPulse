@@ -27,23 +27,23 @@ class CustomLoginForm(AuthenticationForm):
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Имя пользователя"}
+            attrs={"class": "form-input", "placeholder": "Имя пользователя"}
         )
     )
     email = forms.EmailField(
         widget=forms.EmailInput(
-            attrs={"class": "form-control", "placeholder": "Адрес электронной почты"}
+            attrs={"class": "form-input", "placeholder": "Адрес электронной почты"}
         )
     )
     password1 = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Пароль"}
+            attrs={"class": "form-input", "placeholder": "Пароль"}
         ),
         help_text="",
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Подтверждение пароля"}
+            attrs={"class": "form-input", "placeholder": "Подтверждение пароля"}
         )
     )
 
