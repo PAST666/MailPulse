@@ -1,9 +1,11 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import uuid
-from django.utils.timezone import now
+from django.utils import timezone
 
 MAX_NAME_LENGTH = 150
+
 
 class User(AbstractUser):
     first_name = models.CharField("Имя", max_length=MAX_NAME_LENGTH, null=True, blank=True)
@@ -17,9 +19,6 @@ class User(AbstractUser):
     )
     phone_number = models.IntegerField("Телефон", null=True, blank=True)
     country = models.CharField("Страна", max_length=MAX_NAME_LENGTH, null=True, blank=True)
-    is_email_verified = models.BooleanField(default=False)
-    email_verification_token = models.UUIDField(default=uuid.uuid4, editable=False)
-    email_verification_token_created = models.DateTimeField(auto_now_add=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
@@ -33,3 +32,41 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class ActivationToken(models.Model):
+    """Модель токен для подтверждения email."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Пользователь",
+    )
+    token = models.UUIDField(  # По желанию, здесь можно использовать
+        # другую логику для генерации токена
+        "Токен активации",
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+    )
+    created_at = models.DateTimeField(
+        "Создан",
+        auto_now_add=True,
+    )
+    expires_at = models.DateTimeField(
+        "Истекает",
+    )
+
+    def save(
+            self, *args, **kwargs):
+        if not self.expires_at:
+            verification_token_expires_minutes = 15
+
+            self.expires_at = timezone.now() + timezone.timedelta(
+                minutes=verification_token_expires_minutes,
+            )
+
+        return super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return f"{self.user.usename} -> {self.token}"
