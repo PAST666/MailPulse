@@ -8,7 +8,7 @@ from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from .forms import CustomLoginForm, CustomUserCreationForm, ProfileUserForm
-from users.models import User
+from .models import User, ActivationToken
 
 class CustomLoginView(LoginView):
     form_class = CustomLoginForm
@@ -31,12 +31,13 @@ class CustomRegisterView(CreateView):
         user.save()
 
         # token = ... # TODO нужно реализловать генерацию токен (например, модель ActivationToken)
-
+        # token = str(uuid.uuid4())
+        activation_token = ActivationToken.objects.create(user=user)
         verification_url = self.request.build_absolute_uri(
             reverse_lazy(
                 'password_reset_confirm',
-                # kwargs={"token": str(token.token)}
-                kwargs={"token": str(uuid.uuid4())}
+                kwargs={"token": str(activation_token.token)}
+                # kwargs={"token": str(uuid.uuid4())}
             ),
         )
 
@@ -64,12 +65,6 @@ class EmailVerificationSendView(TemplateView):
     template_name = 'users/password_reset_sent.html'
 
 
-    # TODO переопределить метод form_valid
-# TemplateView
-# TODO реализовать класс VerifyEmailView - подтверждение
-# TODO реализовать класс ProfileView для просмотра и редактирования профиля
-
-# https://dev.to/yahaya_hk/password-reset-views-in-django-2gf2
 
 
 

@@ -1,5 +1,7 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 MAX_NAME_LENGTH = 150
 
@@ -28,3 +30,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class ActivationToken(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Активация токена для {self.user.email}"
