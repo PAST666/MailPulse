@@ -69,4 +69,4 @@ class ActivationToken(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.user.usename} -> {self.token}"
+        return f"{self.user.username} -> {self.token}"
