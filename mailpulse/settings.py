@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "mailings",
     "users",
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -145,5 +146,7 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     # "users.authentication.EmailAuthBackend",
 ]
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/media/'
 

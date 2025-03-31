@@ -85,21 +85,15 @@ class VerifyEmailView(TemplateView):
                 {"error": "Недействительная ссылка"}
             )
 
-        # TODO: Нужно реализовать логику проверки: Не истек ли срок действия токена
-
         user = token.user
         user.is_active = True
         user.save()
-
-        token.delete()  # После активации пользователя удаляется токен
-        login(request, user)  # авторизуется пользователь
+        token.delete()
+        login(request, user)
 
         return super().get(request, *args, **kwargs)
 
 class ProfileDetailView(DetailView):
-    """
-    Представление для просмотра профиля
-    """
     model = Profile
     context_object_name = 'profile'
     template_name = 'users/profile_detail.html'
@@ -109,11 +103,7 @@ class ProfileDetailView(DetailView):
         context['title'] = f'Страница пользователя: {self.object.user.username}'
         return context
 
-
 class ProfileUpdateView(UpdateView):
-    """
-    Представление для редактирования профиля 
-    """
     model = Profile
     form_class = ProfileUpdateForm
     template_name = 'users/profile_edit.html'
@@ -123,7 +113,6 @@ class ProfileUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = f'Редактирование профиля пользователя: {self.request.user.username}'
         if self.request.POST:
             context['user_form'] = UserUpdateForm(self.request.POST, instance=self.request.user)
         else:
