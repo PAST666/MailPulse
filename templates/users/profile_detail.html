@@ -9,13 +9,21 @@
             {% if profile.avatar %}
                 <img src="{{ profile.avatar.url }}" alt="Аватар пользователя" class="img-fluid rounded-circle mb-3">
             {% else %}
-                <img src="/media/images/avatars/default.jpg" alt="Аватар по умолчанию" class="img-fluid rounded-circle mb-3">
+                <img src="../media/images/avatars/default.jpg" alt="Аватар по умолчанию" class="img-fluid rounded-circle mb-3">
             {% endif %}
         </div>
         <div class="col-md-8">
             <h2>{{ profile.user.username }}</h2>
             <p><strong>Email:</strong> {{ profile.user.email }}</p>
             
+            {% if user.first_name %}
+                <p><strong>Имя:</strong> {{ user.first_name }}</p>
+            {% endif %}
+
+            {% if user.last_name %}
+                <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
+            {% endif %}
+
             {% if profile.bio %}
                 <p><strong>О себе:</strong> {{ profile.bio }}</p>
             {% endif %}
