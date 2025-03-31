@@ -9,7 +9,7 @@
             {% if profile.avatar %}
                 <img src="{{ profile.avatar.url }}" alt="Аватар пользователя" class="img-fluid rounded-circle mb-3">
             {% else %}
-                <img src="/static/images/default_avatar.png" alt="Аватар по умолчанию" class="img-fluid rounded-circle mb-3">
+                <img src="/media/images/avatars/default.jpg" alt="Аватар по умолчанию" class="img-fluid rounded-circle mb-3">
             {% endif %}
         </div>
         <div class="col-md-8">
@@ -31,6 +31,9 @@
             {% if profile.user == request.user %}
                 <a href="{% url 'profile_edit' %}" class="btn btn-primary">Редактировать профиль</a>
             {% endif %}
+            <div class="text-center">
+                <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
+            </div>
         </div>
     </div>
 </div>

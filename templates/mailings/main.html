@@ -7,23 +7,27 @@
 </head>
 <body>
     {% if not user.is_authenticated %}
+    <h1>Это главная страница</h1>
+    <h1>Вы не авторизованы</h1>
     <div class='header'>
         <ul class='mainmenu'
             <li class="nav-item">
-                <a class="nav-link  text-white" href="{% url 'login' %}">Вход</a> | <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+                <p><a class="nav-link  text-white" href="{% url 'login' %}">Вход</a> | <a class="nav-link" href="{% url 'register' %}">Регистрация</a></p>
             </li>
         </ul>
     </div>
-    <h1>Это главная страница</h1>
-    <h1>Вы не авторизованы</h1>
     {% else %}
+        <h1>Это главная страница</h1>
         <ul class="dropdown-menu">
-            <span class="nav-link">{{ user.username }}</span>
+            <span class="nav-link"><h2>{{ user.username }}</h2></span>
             <li>
-                <a class="dropdown-item  text-white" href="{% url "main" %}">Личный кабинет</a>
+                <p><a class="dropdown-item  text-white" href="{% url "main" %}">Личный кабинет</a></p>
+            </li>
+            <li>
+                <p><a class="dropdown-item  text-white" href="{% url "profile_detail" user.profile.slug %}">Профиль</a></p>
             </li>
             {% if user.is_admin or user.is_staff %}
-                <li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li>
+                <p><li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li></p>
             {% endif %}
             {% comment %}
             <li>
@@ -35,7 +39,6 @@
                 <button type="submit">Выйти</button>
             </form>
         </ul>
-        <h1>Это главная страница</h1>
     {% endif %}
 </body>
 </html>
