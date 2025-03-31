@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Редактирование профиля</h2>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Основная информация</h4>
+                {{ user_form|crispy }}
+            </div>
+            
+            <div class="col-md-6">
+                <h4>Дополнительная информация</h4>
+                {{ form|crispy }}
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+            <a href="{% url 'profile_detail' slug=user.profile.slug %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

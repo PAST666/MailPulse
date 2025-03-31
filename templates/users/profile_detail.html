@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" alt="Аватар пользователя" class="img-fluid rounded-circle mb-3">
+            {% else %}
+                <img src="/static/images/default_avatar.png" alt="Аватар по умолчанию" class="img-fluid rounded-circle mb-3">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h2>{{ profile.user.username }}</h2>
+            <p><strong>Email:</strong> {{ profile.user.email }}</p>
+            
+            {% if profile.bio %}
+                <p><strong>О себе:</strong> {{ profile.bio }}</p>
+            {% endif %}
+            
+            {% if profile.birth_date %}
+                <p><strong>Дата рождения:</strong> {{ profile.birth_date }}</p>
+            {% endif %}
+            
+            {% if profile.website %}
+                <p><strong>Веб-сайт:</strong> <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a></p>
+            {% endif %}
+            
+            {% if profile.user == request.user %}
+                <a href="{% url 'profile_edit' %}" class="btn btn-primary">Редактировать профиль</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
