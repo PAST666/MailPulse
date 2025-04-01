@@ -24,10 +24,10 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    phone_number = models.IntegerField("Телефон", null=True, blank=True)
-    country = models.CharField("Страна", max_length=MAX_NAME_LENGTH, null=True, blank=True)
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    phone_number = models.CharField("Телефон", max_length=MAX_NAME_LENGTH, blank=True, )
+    country = models.CharField("Страна", max_length=MAX_NAME_LENGTH, blank=True)
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email"]
 
     class Meta:
         verbose_name = "Пользователь"
@@ -49,8 +49,7 @@ class ActivationToken(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Пользователь",
     )
-    token = models.UUIDField(  # По желанию, здесь можно использовать
-        # другую логику для генерации токена
+    token = models.UUIDField(
         "Токен активации",
         default=uuid.uuid4,
         editable=False,

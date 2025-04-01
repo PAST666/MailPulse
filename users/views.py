@@ -42,11 +42,11 @@ class CustomRegisterView(CreateView):
         user.is_active = False
         user.save()
 
-        token = ActivationToken.objects.create(user=user)
+        activation_token = ActivationToken.objects.create(user=user)
         verification_url = self.request.build_absolute_uri(
             reverse_lazy(
                 'password_reset_confirm',
-                kwargs={"token": str(token.token)}
+                kwargs={"token": str(activation_token.token)}
             ),
         )
 
@@ -133,18 +133,3 @@ class ProfileUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('profile_detail', kwargs={'slug': self.object.slug})
-
-    # TODO переопределить метод form_valid
-# TemplateView
-# TODO реализовать класс VerifyEmailView - подтверждение
-# TODO реализовать класс ProfileView для просмотра и редактирования профиля
-
-# https://dev.to/yahaya_hk/password-reset-views-in-django-2gf2
-
-
-
-
-
-
-
-

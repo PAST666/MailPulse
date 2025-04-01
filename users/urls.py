@@ -27,6 +27,7 @@ urlpatterns = [
     # TODO: Можно изменить логику маршрута,
     #  это зависит от кода users/models.py (45 строка кода)
     path('reset/<uuid:token>/', VerifyEmailView.as_view(), name ='password_reset_confirm'),
+    # path('reset/<uuid:token>/', VerifyEmailView.as_view(), name ='password_reset_confirm'), вверху password resetconfirmview
 
     path('reset_password_complete/',
         auth_views.PasswordResetCompleteView.as_view(template_name="users/password_reset_done.html"),

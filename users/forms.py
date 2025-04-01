@@ -25,27 +25,6 @@ class CustomLoginForm(AuthenticationForm):
     )
 
 class CustomUserCreationForm(UserCreationForm):
-    username = forms.CharField(
-        widget=forms.TextInput(
-            attrs={"class": "form-input", "placeholder": "Имя пользователя"}
-        )
-    )
-    email = forms.EmailField(
-        widget=forms.EmailInput(
-            attrs={"class": "form-input", "placeholder": "Адрес электронной почты"}
-        )
-    )
-    password1 = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={"class": "form-input", "placeholder": "Пароль"}
-        ),
-        help_text="",
-    )
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={"class": "form-input", "placeholder": "Подтверждение пароля"}
-        )
-    )
 
     class Meta:
         model = User
@@ -91,6 +70,7 @@ class ProfileUserForm(forms.ModelForm):
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-input'}),
             'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+            'birth_date': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
         }
 class UserUpdateForm(forms.ModelForm):
 
@@ -108,6 +88,9 @@ class UserUpdateForm(forms.ModelForm):
                 'class': 'form-control',
                 'autocomplete': 'off'
             })
+            self.fields['username'].widget.attrs['readonly'] = True
+            self.fields['email'].widget.attrs['readonly'] = True
+            self.fields['username'].label = 'Логин'
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -133,3 +116,9 @@ class ProfileUpdateForm(forms.ModelForm):
                 'class': 'form-control',
                 'autocomplete': 'off'
             })
+            self.fields['birth_date'].widget = forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'autocomplete': 'off',
+            })
+            self.fields['slug'].widget.attrs['readonly'] = True
