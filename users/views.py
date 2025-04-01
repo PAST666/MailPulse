@@ -35,7 +35,7 @@ class CustomLogoutView(LogoutView):
 class CustomRegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'users/register.html'
-    success_url = reverse_lazy('password_reset_sent')
+    success_url = reverse_lazy('email_verification_sent')
 
     def form_valid(self, form):
         user = form.save()
@@ -45,7 +45,7 @@ class CustomRegisterView(CreateView):
         activation_token = ActivationToken.objects.create(user=user)
         verification_url = self.request.build_absolute_uri(
             reverse_lazy(
-                'password_reset_confirm',
+                'email_verified',
                 kwargs={"token": str(activation_token.token)}
             ),
         )
@@ -71,7 +71,7 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
         return reverse_lazy('users:profile', args=[self.request.user.pk])
 
 class EmailVerificationSendView(TemplateView):
-    template_name = 'users/password_reset_sent.html'
+    template_name = 'users/email_verification_sent.html'
 
 
 class VerifyEmailView(TemplateView):

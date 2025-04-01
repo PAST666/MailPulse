@@ -12,6 +12,7 @@ from datetime import date, timedelta
 from .utils import unique_slugify
 
 MAX_NAME_LENGTH = 150
+TOKEN_EXPIRES_MINUTES = 15
 
 
 class User(AbstractUser):
@@ -66,7 +67,7 @@ class ActivationToken(models.Model):
     def save(
             self, *args, **kwargs):
         if not self.expires_at:
-            verification_token_expires_minutes = 15
+            verification_token_expires_minutes = TOKEN_EXPIRES_MINUTES
 
             self.expires_at = timezone.now() + timezone.timedelta(
                 minutes=verification_token_expires_minutes,
@@ -80,14 +81,14 @@ class ActivationToken(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    slug = models.SlugField('URL', max_length=255, blank=True, unique=True)
+    slug = models.SlugField('URL', max_length=MAX_NAME_LENGTH, blank=True, unique=True)
     avatar = models.ImageField(
         'Аватар',
         upload_to='images/avatars/%Y/%m/%d/',
         default='images/avatars/default.jpg',
         blank=True,  
         validators=[FileExtensionValidator(allowed_extensions=('png', 'jpg', 'jpeg'))])
-    bio = models.TextField('Информация о себе', max_length=500, blank=True)
+    bio = models.TextField('Информация о себе', max_length=(MAX_NAME_LENGTH*2), blank=True)
     birth_date = models.DateField('Дата рождения', null=True, blank=True, )
 
     class Meta:
