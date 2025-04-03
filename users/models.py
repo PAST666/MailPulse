@@ -16,8 +16,12 @@ TOKEN_EXPIRES_MINUTES = 15
 
 
 class User(AbstractUser):
-    first_name = models.CharField("Имя", max_length=MAX_NAME_LENGTH, null=True, blank=True)
-    last_name = models.CharField("Фамилия", max_length=MAX_NAME_LENGTH, null=True, blank=True)
+    first_name = models.CharField(
+        "Имя", max_length=MAX_NAME_LENGTH, null=True, blank=True
+    )
+    last_name = models.CharField(
+        "Фамилия", max_length=MAX_NAME_LENGTH, null=True, blank=True
+    )
     email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
     photo = models.ImageField(
         "Аватарка",
@@ -25,7 +29,11 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    phone_number = models.CharField("Телефон", max_length=MAX_NAME_LENGTH, blank=True, )
+    phone_number = models.CharField(
+        "Телефон",
+        max_length=MAX_NAME_LENGTH,
+        blank=True,
+    )
     country = models.CharField("Страна", max_length=MAX_NAME_LENGTH, blank=True)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
@@ -64,8 +72,7 @@ class ActivationToken(models.Model):
         "Истекает",
     )
 
-    def save(
-            self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         if not self.expires_at:
             verification_token_expires_minutes = TOKEN_EXPIRES_MINUTES
 
@@ -81,24 +88,32 @@ class ActivationToken(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    slug = models.SlugField('URL', max_length=MAX_NAME_LENGTH, blank=True, unique=True)
+    slug = models.SlugField("URL", max_length=MAX_NAME_LENGTH, blank=True, unique=True)
     avatar = models.ImageField(
-        'Аватар',
-        upload_to='images/avatars/%Y/%m/%d/',
-        default='images/avatars/default.jpg',
-        blank=True,  
-        validators=[FileExtensionValidator(allowed_extensions=('png', 'jpg', 'jpeg'))])
-    bio = models.TextField('Информация о себе', max_length=(MAX_NAME_LENGTH*2), blank=True)
-    birth_date = models.DateField('Дата рождения', null=True, blank=True, )
+        "Аватар",
+        upload_to="images/avatars/%Y/%m/%d/",
+        default="images/avatars/default.jpg",
+        blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=("png", "jpg", "jpeg"))],
+    )
+    bio = models.TextField(
+        "Информация о себе", max_length=(MAX_NAME_LENGTH * 2), blank=True
+    )
+    birth_date = models.DateField(
+        "Дата рождения",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         """
         Сортировка, название таблицы в базе данных
         """
-        db_table = 'app_profiles'
-        ordering = ('user',)
-        verbose_name = 'Профиль'
-        verbose_name_plural = 'Профили'
+
+        db_table = "app_profiles"
+        ordering = ("user",)
+        verbose_name = "Профиль"
+        verbose_name_plural = "Профили"
 
     def save(self, *args, **kwargs):
         """
@@ -107,18 +122,19 @@ class Profile(models.Model):
         if not self.slug:
             self.slug = unique_slugify(self, self.user.username)
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         """
         Возвращение строки
         """
         return self.user.username
-    
+
     def get_absolute_url(self):
         """
         Ссылка на профиль
         """
-        return reverse('profile_detail', kwargs={'slug': self.slug})
+        return reverse("profile_detail", kwargs={"slug": self.slug})
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
