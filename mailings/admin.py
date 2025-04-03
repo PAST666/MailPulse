@@ -1,9 +1,9 @@
 from django.contrib import admin
-from mailings.models import MessageRecipient, MailAttempt
+from mailings.models import Recipient, MailAttempt
 
 
-@admin.register(MessageRecipient)
-class MessageRecipientAdmin(admin.ModelAdmin):
+@admin.register(Recipient)
+class RecipientAdmin(admin.ModelAdmin):
     list_display = (
         "email",
         "name",
@@ -18,6 +18,6 @@ class MailAttemptAdmin(admin.ModelAdmin):
     list_display = (
         "time_of_attempt",
         "status",
-        "answer",
+        "response",
     )
     search_fields = ("status", "answer")
