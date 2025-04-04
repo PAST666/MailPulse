@@ -1,5 +1,4 @@
 import os
-from decouple import config
 
 from pathlib import Path
 from django.conf.global_settings import STATICFILES_DIRS
@@ -12,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-^d0o9z+hb5y^50d0)pb@4dc3_gi!8ik%-!&4&wyu4v83%u9lcq"
+SECRET_KEY = 'django-insecure-^d0o9z+hb5y^50d0)pb@4dc3_gi!8ik%-!&4&wyu4v83%u9lcq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -146,4 +145,3 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
-
