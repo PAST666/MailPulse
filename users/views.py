@@ -12,7 +12,7 @@ from django.db import transaction
 from .forms import (
     CustomLoginForm,
     CustomUserCreationForm,
-    ProfileUserForm,
+    # ProfileUserForm,
     UserUpdateForm,
     ProfileUpdateForm,
 )
@@ -60,14 +60,14 @@ class CustomRegisterView(CreateView):
         return super().form_valid(form)
 
 
-class ProfileUser(LoginRequiredMixin, UpdateView):
-    model = User
-    form_class = ProfileUserForm
-    template_name = "users/profile.html"
-    extra_context = {"title": "Регистрация"}
+# class ProfileUser(LoginRequiredMixin, UpdateView):
+#     model = User
+#     form_class = ProfileUserForm
+#     template_name = "users/profile.html"
+#     extra_context = {"title": "Регистрация"}
 
-    def get_success_url(self) -> str:
-        return reverse_lazy("users:profile", args=[self.request.user.pk])
+#     def get_success_url(self) -> str:
+#         return reverse_lazy("users:profile", args=[self.request.user.pk])
 
 
 class EmailVerificationSendView(TemplateView):

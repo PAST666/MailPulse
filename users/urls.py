@@ -5,7 +5,7 @@ from .views import (
     CustomLoginView,
     CustomLogoutView,
     CustomRegisterView,
-    ProfileUser,
+    # ProfileUser,
     VerifyEmailView,
     ProfileUpdateView,
     ProfileDetailView,
@@ -18,7 +18,7 @@ urlpatterns = [
     path("login/", CustomLoginView.as_view(), name="login"),
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("register/", CustomRegisterView.as_view(), name="register"),
-    path("profile/<int:pk>/", ProfileUser.as_view(), name="profile"),
+    # path("profile/<int:pk>/", ProfileUser.as_view(), name="profile"),
     path(
         "verify_email/<uuid:token>/", VerifyEmailView.as_view(), name="email_verified"
     ),

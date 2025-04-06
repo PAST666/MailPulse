@@ -58,40 +58,41 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     )
 
 
-class ProfileUserForm(forms.ModelForm):
-    username = forms.CharField(
-        disabled=True,
-        label="Логин",
-        widget=forms.TextInput(attrs={"class": "form-input"}),
-    )
-    email = forms.CharField(
-        disabled=True,
-        label="E-mail",
-        widget=forms.TextInput(attrs={"class": "form-input"}),
-    )
+# class ProfileUserForm(forms.ModelForm):
+#     username = forms.CharField(
+#         disabled=True,
+#         label="Логин",
+#         widget=forms.TextInput(attrs={"class": "form-input"}),
+#     )
+#     email = forms.CharField(
+#         disabled=True,
+#         label="E-mail",
+#         widget=forms.TextInput(attrs={"class": "form-input"}),
+#     )
 
-    class Meta:
-        model = User
-        fields = [
-            "username",
-            "first_name",
-            "last_name",
-            "email",
-            "phone_number",
-            "photo",
-        ]
-        labels = {
-            "first_name": "Имя",
-            "last_name": "Фамилия",
-        }
+#     class Meta:
+#         model = User
+#         fields = [
+#             "username",
+#             "first_name",
+#             "last_name",
+#             "email",
+#             "phone_number",
+#             "photo",
+#         ]
+#         labels = {
+#             "first_name": "Имя",
+#             "last_name": "Фамилия",
+#             "email": "Имаил",
+#         }
 
-        widgets = {
-            "first_name": forms.TextInput(attrs={"class": "form-input"}),
-            "last_name": forms.TextInput(attrs={"class": "form-input"}),
-            "birth_date": forms.DateInput(
-                attrs={"class": "form-input", "type": "date"}
-            ),
-        }
+#         widgets = {
+#             "first_name": forms.TextInput(attrs={"class": "form-input"}),
+#             "last_name": forms.TextInput(attrs={"class": "form-input"}),
+#             "birth_date": forms.DateInput(
+#                 attrs={"class": "form-input", "type": "date"}
+#             ),
+#         }
 
 
 class UserUpdateForm(forms.ModelForm):
