@@ -1,2 +1,19 @@
-{% if manager_group_members %}
-    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница сообщений</title>
+</head>
+<body>
+    <h2>Страница отображения списка сообщений</h2>
+    {% if manager_group_members %}
+        {% for message in messages %}
+            <li>{{ message.title }}:   {{ message.text }}</li>
+        {% endfor %}
+    {% endif %}
+    <div class="text-center">
+        <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
+    </div>
+</body>
+</html>

@@ -1,6 +1,14 @@
 from django.contrib import admin
-from mailings.models import Recipient, MailAttempt
+from mailings.models import Recipient, MailAttempt, Message
 
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "text",
+    )
+    search_fields = ("title", "text")
 
 @admin.register(Recipient)
 class RecipientAdmin(admin.ModelAdmin):

@@ -26,18 +26,22 @@
             {% if user.is_admin or user.is_staff %}
                 <p><li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li></p>
             {% endif %}
+            <div class="text-center">
+                <p><a href="{% url 'messages' %}">Сообщения</a></p>
+            </div>
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit">Выйти</button>
             </form>
         </ul>
-        {% if can_view_all_mailings %}
+
+        {% comment %} {% if can_view_all_mailings %}
             <p>Показывается количество рассылок</p>
         {% endif %}
 
         {% if can_block_mailings %}
             <p>Показываются блокировки рассылок</p>
-        {% endif %}
+        {% endif %} {% endcomment %}
     {% endif %}
 </body>
 </html>
