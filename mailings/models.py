@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
+from .managers import MailingManager, MessageManager
 
 MAX_NAME_LENGTH = 150
 MAX_TEXT_LENGTH = 255
@@ -25,6 +26,7 @@ class Message(models.Model):
     permissions = [
     ("can_view_all_messages", "Может просматривать все сообщения"),
     ]
+    objects = MessageManager()
 
     class Meta:
         verbose_name = "Сообщение"
@@ -51,6 +53,7 @@ class Mailing(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="mailings"
     )
+    objects = MailingManager()
 
     class Meta:
         verbose_name = "Рассылка"
