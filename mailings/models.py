@@ -1,10 +1,12 @@
 from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
+from django.urls import reverse
 from .managers import MailingManager, MessageManager
 
 MAX_NAME_LENGTH = 150
 MAX_TEXT_LENGTH = 255
+
 
 class MailAttemptStatus(models.TextChoices):
     SUCCESS = ("SUCCESS", "Успех")
@@ -16,6 +18,7 @@ class MailingStatus(models.TextChoices):
     STARTED = ("STARTED", "Запущена")
     COMPLETED = ("COMPLETED", "Завершена")
 
+
 # TODO ordering, permissions из ТЗ
 class Message(models.Model):
     title = models.CharField("Заголовок", max_length=MAX_NAME_LENGTH)
@@ -24,7 +27,7 @@ class Message(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="messages"
     )
     permissions = [
-    ("can_view_all_messages", "Может просматривать все сообщения"),
+        ("can_view_all_messages", "Может просматривать все сообщения"),
     ]
     objects = MessageManager()
 
@@ -33,10 +36,11 @@ class Message(models.Model):
         verbose_name_plural = "Сообщения"
         ordering = ("title",)
 
+    def get_absolute_url(self):
+        return reverse("message_update", kwargs={"pk": self.pk})
+
     def __str__(self):
         return self.title
-
-
 
 
 # TODO методы def переопределять поля, метод send_mailing, менять выбор, отправлять рассылки получателям

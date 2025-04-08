@@ -9,10 +9,13 @@
     <h2>Страница отображения списка сообщений</h2>
     {% if manager_group_members %}
         {% for message in messages %}
-            <li>{{ message.title }}:   {{ message.text }}</li>
+            <li>
+                {{ message.title }} : {{ message.text }} <a href="{{ message.get_absolute_url }}">Редактировать</a>
+            </li>
         {% endfor %}
     {% endif %}
     <div class="text-center">
+
         <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
     </div>
 </body>
