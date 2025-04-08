@@ -36,8 +36,11 @@ class Message(models.Model):
         verbose_name_plural = "Сообщения"
         ordering = ("title",)
 
-    def get_absolute_url(self):
+    def get_absolute_url_update(self):
         return reverse("message_update", kwargs={"pk": self.pk})
+    
+    def get_absolute_url_delete(self):
+        return reverse("message_delete", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title

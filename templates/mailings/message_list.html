@@ -10,7 +10,7 @@
     {% if manager_group_members %}
         {% for message in messages %}
             <li>
-                {{ message.title }} : {{ message.text }} <a href="{{ message.get_absolute_url }}">Редактировать</a>
+                {{ message.title }} : {{ message.text }} <a href="{{ message.get_absolute_url_update }}">Редактировать</a><a href="{{ message.get_absolute_url_delete }}">Удалить</a>
             </li>
         {% endfor %}
     {% endif %}

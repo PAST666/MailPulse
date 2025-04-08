@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render
-from django.views.generic import View, ListView, UpdateView
+from django.views.generic import View, ListView, UpdateView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
@@ -44,6 +44,20 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["manager_group_members"] = check_manager(self.request.user)
+        return context
+    
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
+    model = Message
+    template_name = "mailings/message_delete.html"
+    success_url = reverse_lazy("messages")
+    login_url = "/users/login/"
+
+    def get_queryset(self):
+        return Message.objects.for_user(self.request.user)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
