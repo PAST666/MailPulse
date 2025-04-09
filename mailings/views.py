@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render
-from django.views.generic import View, ListView, UpdateView, DeleteView
+from django.views.generic import View, ListView, UpdateView, DeleteView, CreateView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
@@ -62,3 +62,26 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
         return context
+
+class MessageCreateView(LoginRequiredMixin, CreateView):
+    model = Message
+    template_name = "mailings/message_create.html"
+    fields = ["title", "text"]
+    login_url = "/users/login/"
+    success_url = reverse_lazy("messages")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["manager_group_members"] = check_manager(self.request.user)
+        return context
+    
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+
+
+
+
+

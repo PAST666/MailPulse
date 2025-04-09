@@ -8,6 +8,7 @@
 <body>
     <h2>Страница отображения списка сообщений</h2>
     {% if manager_group_members %}
+        <a href="{% url 'message_create' %}">Создать сообщение</a>
         {% for message in messages %}
             <li>
                 {{ message.title }} : {{ message.text }} <a href="{{ message.get_absolute_url_update }}">Редактировать</a><a href="{{ message.get_absolute_url_delete }}">Удалить</a>
@@ -15,7 +16,6 @@
         {% endfor %}
     {% endif %}
     <div class="text-center">
-
         <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
     </div>
 </body>
