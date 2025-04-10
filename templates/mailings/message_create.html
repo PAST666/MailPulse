@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% if manager_group_members %}
         <h2>Создать сообщение</h2>
         <p>Заполните форму для создания нового сообщения</p>        
         <div>
@@ -9,8 +8,7 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="btn">Создать</button>
-                <p><a href="{% url 'messages' %}" class="btn">Назад</a></p>
+                <p><a href="{% url 'message_list' %}" class="btn">Назад</a></p>
             </form>
         </div>
-    {% endif %}
 {% endblock %}

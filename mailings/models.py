@@ -124,7 +124,12 @@ class Mailing(models.Model):
             "failed": failed_count,
             "total": success_count + failed_count,
         }
-
+    def get_absolute_url_update(self):
+        return reverse("mailing_update", kwargs={"pk": self.pk})
+    
+    def get_absolute_url_delete(self):
+        return reverse("time_of_first_send","mailing_delete", kwargs={"pk": self.pk})
+    
     def __str__(self):
         return f"{self.message.title} - {self.status}"
 

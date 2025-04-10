@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Удалить рассылку</h2>
+    <p>Вы уверены, что хотите удалить следующую рассылку?</p>        
+    <div>
+        <p><strong>Сообщение:</strong> {{ mailing.message.title }}<br></p>
+        <p><strong>Статус:</strong> 
+            {% if mailing.status == 'CREATED' %}
+                Создана
+            {% elif mailing.status == 'STARTED' %}
+                Запущена
+            {% elif mailing.status == 'COMPLETED' %}
+                Завершена
+            {% endif %}
+        <br></p>
+        <p><strong>Дата первой отправки:</strong> {{ mailing.time_of_first_send|date:"d.m.Y H:i" }}<br></p>
+        <p><strong>Дата последней отправки:</strong> {{ mailing.time_of_last_send|date:"d.m.Y H:i" }}<br></p>
+        <p><strong>Количество получателей:</strong> {{ mailing.recipients.count }}<br></p>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn">Удалить</button>
+        <p><a href="{% url 'mailing_list' %}" class="btn">Назад</a></p>
+    </form>
+{% endblock %}

@@ -27,7 +27,8 @@
                 <p><li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li></p>
             {% endif %}
             <div class="text-center">
-                <p><a href="{% url 'messages' %}">Сообщения</a></p>
+                <p><a href="{% url 'message_list' %}">Сообщения</a></p>
+                <p><a href="{% url 'mailing_list' %}">Рассылки</a></p>
             </div>
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
