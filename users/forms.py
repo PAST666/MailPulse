@@ -56,44 +56,7 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             }
         )
     )
-
-
-# class ProfileUserForm(forms.ModelForm):
-#     username = forms.CharField(
-#         disabled=True,
-#         label="Логин",
-#         widget=forms.TextInput(attrs={"class": "form-input"}),
-#     )
-#     email = forms.CharField(
-#         disabled=True,
-#         label="E-mail",
-#         widget=forms.TextInput(attrs={"class": "form-input"}),
-#     )
-
-#     class Meta:
-#         model = User
-#         fields = [
-#             "username",
-#             "first_name",
-#             "last_name",
-#             "email",
-#             "phone_number",
-#             "photo",
-#         ]
-#         labels = {
-#             "first_name": "Имя",
-#             "last_name": "Фамилия",
-#             "email": "Имаил",
-#         }
-
-#         widgets = {
-#             "first_name": forms.TextInput(attrs={"class": "form-input"}),
-#             "last_name": forms.TextInput(attrs={"class": "form-input"}),
-#             "birth_date": forms.DateInput(
-#                 attrs={"class": "form-input", "type": "date"}
-#             ),
-#         }
-
+    
 
 class UserUpdateForm(forms.ModelForm):
 
@@ -110,9 +73,10 @@ class UserUpdateForm(forms.ModelForm):
             self.fields[field].widget.attrs.update(
                 {"class": "form-control", "autocomplete": "off"}
             )
-            self.fields["username"].widget.attrs["readonly"] = True
-            self.fields["email"].widget.attrs["readonly"] = True
-            self.fields["username"].label = "Логин"
+            self.fields["username"].widget = forms.HiddenInput()
+            self.fields["email"].widget = forms.HiddenInput()
+            self.fields["username"].label = ""
+            self.fields["email"].label = ""
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -147,4 +111,5 @@ class ProfileUpdateForm(forms.ModelForm):
                     "autocomplete": "off",
                 }
             )
-            self.fields["slug"].widget.attrs["readonly"] = True
+            self.fields["slug"].widget = forms.HiddenInput()
+            self.fields["slug"].label = ""
