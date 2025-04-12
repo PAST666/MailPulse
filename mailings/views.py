@@ -15,10 +15,6 @@ class MainView(View):
         return render(request, "mailings/main.html")
 
 
-manager_group = Group.objects.get(name="Менеджеры")
-manager_group_members = manager_group.user_set.all()
-
-
 class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = "mailings/message_list.html"
@@ -32,6 +28,18 @@ class MessageListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
         return context
+
+
+class MessageCreateView(LoginRequiredMixin, CreateView):
+    model = Message
+    template_name = "mailings/message_create.html"
+    fields = ["title", "text"]
+    login_url = "/users/login/"
+    success_url = reverse_lazy("message_list")
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 
 class MessageUpdateView(LoginRequiredMixin, UpdateView):
@@ -65,17 +73,6 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class MessageCreateView(LoginRequiredMixin, CreateView):
-    model = Message
-    template_name = "mailings/message_create.html"
-    fields = ["title", "text"]
-    login_url = "/users/login/"
-    success_url = reverse_lazy("message_list")
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
 class MailingListView(LoginRequiredMixin, ListView):
     model = Mailing
     template_name = "mailings/mailing_list.html"
@@ -90,21 +87,7 @@ class MailingListView(LoginRequiredMixin, ListView):
         context["manager_group_members"] = check_manager(self.request.user)
         return context
 
-class MailingUpdateView(LoginRequiredMixin, UpdateView):
-    model = Mailing
-    template_name = "mailings/mailing_update.html"
-    fields = '__all__'
-    login_url = "/users/login/"
-    success_url = reverse_lazy("mailing_list")
 
-    def get_queryset(self):
-        return Mailing.objects.for_user(self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
-    
 class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
     template_name = "mailings/mailing_create.html"
@@ -126,6 +109,23 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
         return context
+
+
+class MailingUpdateView(LoginRequiredMixin, UpdateView):
+    model = Mailing
+    template_name = "mailings/mailing_update.html"
+    fields = '__all__'
+    login_url = "/users/login/"
+    success_url = reverse_lazy("mailing_list")
+
+    def get_queryset(self):
+        return Mailing.objects.for_user(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["manager_group_members"] = check_manager(self.request.user)
+        return context
+
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
     model = Mailing
