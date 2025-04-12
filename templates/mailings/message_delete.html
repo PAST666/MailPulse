@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
+{% block title %}Удаление сообщения{% endblock %}
 {% block content %}
-    {% if manager_group_members %}
+    {% if user == message.owner %}
         <h2>Удалить сообщение</h2>
         <p>Вы уверены, что хотите удалить следующее сообщение?</p>        
         <div>
@@ -13,5 +14,7 @@
             <button type="submit" class="btn">Удалить</button>
             <p><a href="{% url 'message_list' %}" class="btn">Назад</a></p>
         </form>
+    {% else %}
+        <p>У вас нет прав для удаления этого сообщения.</p>
     {% endif %}
 {% endblock %}

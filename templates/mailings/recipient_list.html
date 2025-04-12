@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Список получателей</h1>
+            
+            <div class="d-flex justify-content-between mb-3">
+                <a href="{% url 'recipient_create' %}" class="btn btn-primary">Создать нового получателя</a>
+            </div>
+            
+            {% if recipients %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Email</th>
+                                <th>ФИО</th>
+                                <th>Комментарий</th>
+                                <th>Владелец</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for recipient in recipients %}
+                                {% if manager_group_members or user == recipient.owner %}
+                                <tr>
+                                    <td>{{ recipient.email }}</td>
+                                    <td>{{ recipient.full_name }}</td>
+                                    <td>{{ recipient.comment|truncatechars:50 }}</td>
+                                    <td>{{ recipient.owner.username }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            {% if user == recipient.owner %}
+                                                <!-- Владелец может редактировать и удалять -->
+                                                <a href="{{ recipient.get_absolute_url_update }}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+                                                <a href="{{ recipient.get_absolute_url_delete }}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                                            {% endif %}
+                                            
+                                            {% if manager_group_members and user != recipient.owner %}
+                                                <!-- Менеджеры могут блокировать/разблокировать, но не редактировать/удалять чужие данные -->
+                                                {% if recipient.is_blocked %}
+                                                    <a href="#" class="btn btn-sm btn-outline-success">Разблокировать</a>
+                                                {% else %}
+                                                    <a href="#" class="btn btn-sm btn-outline-warning">Блокировать</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <p>У вас пока нет получателей. Создайте первого получателя!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if manager_group_members %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Информация для менеджеров</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Как менеджер, вы имеете доступ к просмотру всех получателей в системе и можете блокировать/разблокировать их.</p>
+                        <p>Общее количество получателей: <strong>{{ recipients.count }}</strong></p>
+                        <p><strong>Примечание:</strong> Вы не можете редактировать или удалять данные, созданные другими пользователями.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="text-center">
+        <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
+    </div>
+</div>
+{% endblock %}

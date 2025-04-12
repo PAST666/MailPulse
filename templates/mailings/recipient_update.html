@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактирование получателя{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Редактирование получателя</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.name.label_tag }}
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.middle_name.label_tag }}
+                            {{ form.middle_name }}
+                            {% if form.middle_name.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.middle_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.surname.label_tag }}
+                            {{ form.surname }}
+                            {% if form.surname.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.surname.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.comment.label_tag }}
+                            {{ form.comment }}
+                            {% if form.comment.errors %}
+                                <div class="alert alert-danger mt-1">
+                                    {{ form.comment.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if manager_group_members %}
+                            <div class="form-group mb-3">
+                                {{ form.owner.label_tag }}
+                                {{ form.owner }}
+                                {% if form.owner.errors %}
+                                    <div class="alert alert-danger mt-1">
+                                        {{ form.owner.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'recipient_list' %}" class="btn btn-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends "base.html" %}
+
+{% block title %}Редактирование сообщения{% endblock %}
+
+{% block content %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактирование сообщения</title>
     <style>
         .form-group {
             margin-bottom: 15px;
@@ -40,7 +41,6 @@
         }
     </style>
 </head>
-<body>
     <h2>Редактирование сообщения</h2>
     
     <form method="post">
@@ -71,5 +71,4 @@
         <h3><a href="{% url 'message_list' %}">Назад</a></h3>
         <h3><a href="{% url 'main' %}">Вернуться на главную</a></h3>
     </div>
-</body>
-</html>
+{% endblock %}

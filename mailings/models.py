@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
 from django.urls import reverse
-from .managers import MailingManager, MessageManager
+from .managers import MailingManager, MessageManager, RecipientManager
 
 MAX_NAME_LENGTH = 150
 MAX_TEXT_LENGTH = 255
@@ -143,10 +143,17 @@ class Recipient(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="recipients"
     )
+    objects = RecipientManager()
 
     class Meta:
         verbose_name = "Получатель"
         verbose_name_plural = "Получатели"
+    
+    def get_absolute_url_update(self):
+        return reverse("recipient_update", kwargs={"pk": self.pk})
+    
+    def get_absolute_url_delete(self):
+        return reverse("recipient_delete", kwargs={"pk": self.pk})
 
     @property
     def full_name(self):

@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Страница сообщений</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Страница сообщений{% endblock %}
+{% block content %}    
     <h2>Страница отображения списка сообщений</h2>
-    {% if manager_group_members %}
-        <a href="{% url 'message_create' %}">Создать сообщение</a>
-        {% for message in messages %}
+    <a href="{% url 'message_create' %}">Создать сообщение</a>
+    {% for message in messages %}
+        {% if manager_group_members or user == message.owner %}
             <li>
-                {{ message.title }} : {{ message.text }} <a href="{{ message.get_absolute_url_update }}">Редактировать</a><a href="{{ message.get_absolute_url_delete }}">Удалить</a>
+                {{ message.title }} : {{ message.text }} {% if user == message.owner %}<a href="{{ message.get_absolute_url_update }}">Редактировать</a><a href="{{ message.get_absolute_url_delete }}">Удалить</a>{% endif %}
             </li>
-        {% endfor %}
-    {% endif %}
+        {% endif %}
+    {% endfor %}
     <div class="text-center">
         <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
     </div>
-</body>
-</html>
+{% endblock %}

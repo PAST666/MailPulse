@@ -1,7 +1,7 @@
 import os
 
 from pathlib import Path
-from django.conf.global_settings import STATICFILES_DIRS
+from django.conf.global_settings import LOGIN_URL, STATICFILES_DIRS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -145,3 +145,4 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
+LOGIN_URL = "/users/login/"
