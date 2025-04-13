@@ -3,6 +3,7 @@
 {% block content %}
     <h2>Список рассылок</h2>
     {% if mailings %}
+        <a href="{% url 'mailing_create' %}">Создать рассылку</a>
         <table class="table">
             <thead>
                 <tr>
@@ -31,8 +32,20 @@
                         <td>{{ mailing.time_of_last_send|date:"d.m.Y H:i" }}</td>
                         <td>{{ mailing.recipients.count }}</td>
                         <td>
-                            <a href="{% url 'mailing_update' mailing.pk %}" class="btn btn-sm">Изменить</a>
-                            <a href="{% url 'mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                            {% if user == mailing.owner %}
+                                <a href="{% url 'mailing_update' mailing.pk %}" class="btn btn-sm">Изменить</a>
+                                <a href="{% url 'mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                            {% endif %}
+                            
+                            {% comment %} {% if manager_group_members %}
+                                <!-- Менеджеры могут блокировать/отключать рассылки -->
+                                {% if mailing.status == 'STARTED' %}
+                                    <a href="{% url 'mailing_disable' mailing.pk %}" class="btn btn-sm btn-warning">Отключить</a>
+                                {% elif mailing.status == 'CREATED' %}
+                                    <a href="{% url 'mailing_disable' mailing.pk %}" class="btn btn-sm btn-warning">Заблокировать</a>
+                                {% endif %}
+                            {% endif %} {% endcomment %}
+                            
                             {% comment %} {% if mailing.status == 'CREATED' %}
                                 <a href="{% url 'mailing_send' mailing.pk %}" class="btn btn-sm btn-success">Отправить</a>
                             {% endif %} {% endcomment %}
@@ -49,7 +62,7 @@
     {% if manager_group_members %}
         <div class="admin-section">
             <h3>Информация для менеджеров</h3>
-            <p>Вы видите все рассылки в системе, так как являетесь менеджером.</p>
+            <p><h3>Вы видите все рассылки в системе, так как являетесь менеджером.</h3></p>
         </div>
     {% endif %}
     <div class="text-center">

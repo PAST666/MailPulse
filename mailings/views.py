@@ -185,3 +185,5 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
         return context
+
+class MailingAttempt 
