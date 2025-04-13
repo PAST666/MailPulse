@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+{% block content %}  
     {% if not user.is_authenticated %}
     <h1>Это главная страница</h1>
     <h1>Вы не авторизованы</h1>
@@ -46,5 +42,4 @@
             <p>Показываются блокировки рассылок</p>
         {% endif %} {% endcomment %}
     {% endif %}
-</body>
-</html>
+{% endblock %}
