@@ -12,6 +12,7 @@ from .views import (
     RecipientCreateView,
     RecipientUpdateView,
     RecipientDeleteView,
+    MailAttemptListView
 )
 
 
@@ -36,4 +37,5 @@ urlpatterns = [
         RecipientDeleteView.as_view(),
         name="recipient_delete",
     ),
+    path("mail_attempt/", MailAttemptListView.as_view(), name="mail_attempt"),
 ]

@@ -30,6 +30,7 @@
                 <p><a href="{% url 'message_list' %}">Сообщения</a></p>
                 <p><a href="{% url 'recipient_list' %}">Получатели</a></p>
                 <p><a href="{% url 'mailing_list' %}">Рассылки</a></p>
+                <p><a href="{% url 'mail_attempt' %}">Попытки</a></p>
             </div>
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}

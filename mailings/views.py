@@ -5,7 +5,7 @@ from django.views.generic import View, ListView, UpdateView, DeleteView, CreateV
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
-from .models import Mailing, Message, Recipient, MailingStatus
+from .models import Mailing, Message, Recipient, MailingStatus, MailAttempt
 from .utils import check_manager
 from .managers import MailingManager, MessageManager
 
@@ -186,4 +186,28 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
         context["manager_group_members"] = check_manager(self.request.user)
         return context
 
-class MailingAttempt 
+class MailAttemptListView(LoginRequiredMixin, ListView):
+    model = MailAttempt
+    template_name = "mailings/mail_attempt_list.html"
+    context_object_name = "mail_attempts"
+    
+    def get_queryset(self):
+        user = self.request.user
+        
+        # Если пользователь менеджер, показываем все попытки рассылок
+        if check_manager(user):
+            return MailAttempt.objects.all().select_related('mailing', 'mailing__owner').order_by('-time_of_attempt')
+        
+        # Иначе показываем только попытки рассылок, принадлежащих пользователю
+        return MailAttempt.objects.filter(mailing__owner=user).select_related('mailing').order_by('-time_of_attempt')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["manager_group_members"] = check_manager(self.request.user)
+        
+        # Добавляем статистику
+        context["successful_attempts"] = self.get_queryset().filter(status="Успешно").count()
+        context["failed_attempts"] = self.get_queryset().filter(status="Не успешно").count()
+        context["total_attempts"] = self.get_queryset().count()
+        
+        return context
