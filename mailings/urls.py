@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import (
     MessageListView,
     MessageUpdateView,
@@ -15,12 +15,19 @@ from .views import (
     MailAttemptListView
 )
 
+#TODO скорректировать шаблоны с mailings впереди
+# app = "mailings"
+
+message_urls = [
+    path("", MessageListView.as_view(), name="message_list"),
+    path("create/", MessageCreateView.as_view(), name="message_create"),
+    path("<int:pk>/update/", MessageUpdateView.as_view(), name="message_update"),
+    path("<int:pk>/delete/", MessageDeleteView.as_view(), name="message_delete"),
+]
 
 urlpatterns = [
-    path("message/", MessageListView.as_view(), name="message_list"),
-    path("message/create", MessageCreateView.as_view(), name="message_create"),
-    path("message/<int:pk>/update", MessageUpdateView.as_view(), name="message_update"),
-    path("message/<int:pk>/delete", MessageDeleteView.as_view(), name="message_delete"),
+    path("message/", include(message_urls)),
+    #TODO доделать остальные пути без префикса
     path("mailing/", MailingListView.as_view(), name="mailing_list"),
     path("mailing/create", MailingCreateView.as_view(), name="mailing_create"),
     path("mailing/<int:pk>/update", MailingUpdateView.as_view(), name="mailing_update"),

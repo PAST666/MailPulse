@@ -5,20 +5,22 @@ from django.views.generic import View, ListView, UpdateView, DeleteView, CreateV
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
+
+from mailings.forms import MailingForm
 from .models import Mailing, Message, Recipient, MailingStatus, MailAttempt
 from .utils import check_manager
 from .managers import MailingManager, MessageManager
 
 
-class MainView(View):
-    def get(self, request):
-        return render(request, "mailings/main.html")
+
 
 
 class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = "mailings/message_list.html"
     context_object_name = "messages"
+    # TODO сделать пагинацию в шаблоне код пагинации
+    # paginate_by = 10
 
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
@@ -33,6 +35,7 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
     template_name = "mailings/message_create.html"
     fields = ["title", "text"]
+    #TODO во всех success url добавить название приложения apps
     success_url = reverse_lazy("message_list")
 
     def form_valid(self, form):
@@ -48,11 +51,11 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
+    
+    def form_valid(self, form):
+        if form.instance.owner != self.request.user:
+            return self.handle_no_permission()
+        return super().form_valid(form)
 
 
 class MessageDeleteView(LoginRequiredMixin, DeleteView):
@@ -62,11 +65,6 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
 
 
 class MailingListView(LoginRequiredMixin, ListView):
@@ -85,39 +83,45 @@ class MailingListView(LoginRequiredMixin, ListView):
 
 class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
+    form_class = MailingForm
     template_name = "mailings/mailing_create.html"
-    fields = ["message", "recipients", "time_of_first_send", "time_of_last_send"]
     success_url = reverse_lazy("mailing_list")
 
-    def form_valid(self, form):
-        # Устанавливаем текущего пользователя как владельца рассылки
-        form.instance.owner = self.request.user
-        # Устанавливаем начальный статус рассылки
-        form.instance.status = MailingStatus.CREATED
-        return super().form_valid(form)
-    
     def get_queryset(self):
         return Mailing.objects.for_user(self.request.user)
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['message'].queryset = Message.objects.for_user(self.request.user)
+        form.fields['recipients'].queryset = Recipient.objects.for_user(self.request.user)
+        return form
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
+    def form_valid(self, form):
+        if form.instance.owner != self.request.user:
+            return self.handle_no_permission()
+        return super().form_valid(form)
+    
 
 
 class MailingUpdateView(LoginRequiredMixin, UpdateView):
     model = Mailing
+    form_class = MailingForm
     template_name = "mailings/mailing_update.html"
-    fields = '__all__'
     success_url = reverse_lazy("mailing_list")
 
     def get_queryset(self):
         return Mailing.objects.for_user(self.request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['message'].queryset = Message.objects.for_user(self.request.user)
+        form.fields['recipients'].queryset = Recipient.objects.for_user(self.request.user)
+        return form
+    
+    def form_valid(self, form):
+        if form.instance.owner != self.request.user:
+            return self.handle_no_permission()
+        return super().form_valid(form)
 
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
@@ -127,12 +131,7 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Mailing.objects.for_user(self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
-    
+        
 
 class RecipientListView(LoginRequiredMixin, ListView):
     model = Recipient
