@@ -15,8 +15,7 @@ from .views import (
     MailAttemptListView
 )
 
-#TODO скорректировать шаблоны с mailings впереди
-# app = "mailings"
+app_name = "mailings"
 
 message_urls = [
     path("", MessageListView.as_view(), name="message_list"),
@@ -25,13 +24,14 @@ message_urls = [
     path("<int:pk>/delete/", MessageDeleteView.as_view(), name="message_delete"),
 ]
 
-urlpatterns = [
-    path("message/", include(message_urls)),
-    #TODO доделать остальные пути без префикса
-    path("mailing/", MailingListView.as_view(), name="mailing_list"),
-    path("mailing/create", MailingCreateView.as_view(), name="mailing_create"),
-    path("mailing/<int:pk>/update", MailingUpdateView.as_view(), name="mailing_update"),
-    path("mailing/<int:pk>/delete", MailingDeleteView.as_view(), name="mailing_delete"),
+mailing_urls = [
+    path("", MailingListView.as_view(), name="mailing_list"),
+    path("create/", MailingCreateView.as_view(), name="mailing_create"),
+    path("<int:pk>/update/", MailingUpdateView.as_view(), name="mailing_update"),
+    path("<int:pk>/delete/", MailingDeleteView.as_view(), name="mailing_delete"),
+]
+
+recipient_urls = [
     path("recipient/", RecipientListView.as_view(), name="recipient_list"),
     path("recipient/create", RecipientCreateView.as_view(), name="recipient_create"),
     path(
@@ -44,5 +44,11 @@ urlpatterns = [
         RecipientDeleteView.as_view(),
         name="recipient_delete",
     ),
+]
+
+urlpatterns = [
+    path("message/", include(message_urls)),
+    path("mailing/", include(mailing_urls)),
+    path("recipient/", include(recipient_urls)),
     path("mail_attempt/", MailAttemptListView.as_view(), name="mail_attempt"),
 ]

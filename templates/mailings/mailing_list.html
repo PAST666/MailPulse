@@ -3,7 +3,7 @@
 {% block content %}
     <h2>Список рассылок</h2>
     {% if mailings %}
-        <a href="{% url 'mailing_create' %}">Создать рассылку</a>
+        <a href="{% url 'mailings:mailing_create' %}">Создать рассылку</a>
         <table class="table">
             <thead>
                 <tr>
@@ -33,8 +33,8 @@
                         <td>{{ mailing.recipients.count }}</td>
                         <td>
                             {% if user == mailing.owner %}
-                                <a href="{% url 'mailing_update' mailing.pk %}" class="btn btn-sm">Изменить</a>
-                                <a href="{% url 'mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                                <a href="{% url 'mailings:mailing_update' mailing.pk %}" class="btn btn-sm">Изменить</a>
+                                <a href="{% url 'mailings:mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
                             {% endif %}
                             
                             {% comment %} {% if manager_group_members %}
@@ -56,7 +56,7 @@
         </table>
     {% else %}
         <p>У вас пока нет рассылок.</p>
-        <a href="{% url 'mailing_create' %}">Создать рассылку</a>
+        <a href="{% url 'mailings:mailing_create' %}">Создать рассылку</a>
     {% endif %}
     
     {% if manager_group_members %}

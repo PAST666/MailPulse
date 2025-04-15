@@ -36,7 +36,7 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
     template_name = "mailings/message_create.html"
     fields = ["title", "text"]
     #TODO во всех success url добавить название приложения apps
-    success_url = reverse_lazy("message_list")
+    success_url = reverse_lazy("mailings:message_list")
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -47,7 +47,7 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
     model = Message
     template_name = "mailings/message_update.html"
     fields = ["title", "text"]
-    success_url = reverse_lazy("message_list")
+    success_url = reverse_lazy("mailings:message_list")
 
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
@@ -61,7 +61,7 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
 class MessageDeleteView(LoginRequiredMixin, DeleteView):
     model = Message
     template_name = "mailings/message_delete.html"
-    success_url = reverse_lazy("message_list")
+    success_url = reverse_lazy("mailings:message_list")
 
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
@@ -85,7 +85,7 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
     form_class = MailingForm
     template_name = "mailings/mailing_create.html"
-    success_url = reverse_lazy("mailing_list")
+    success_url = reverse_lazy("mailings:mailing_list")
 
     def get_queryset(self):
         return Mailing.objects.for_user(self.request.user)
@@ -107,7 +107,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
     model = Mailing
     form_class = MailingForm
     template_name = "mailings/mailing_update.html"
-    success_url = reverse_lazy("mailing_list")
+    success_url = reverse_lazy("mailings:mailing_list")
 
     def get_queryset(self):
         return Mailing.objects.for_user(self.request.user)
@@ -127,7 +127,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
     model = Mailing
     template_name = "mailings/mailing_delete.html"
-    success_url = reverse_lazy("mailing_list")
+    success_url = reverse_lazy("mailings:mailing_list")
 
     def get_queryset(self):
         return Mailing.objects.for_user(self.request.user)
@@ -151,7 +151,7 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
     model = Recipient
     template_name = "mailings/recipient_create.html"
     fields = ["email", "name",  "middle_name", "surname", "comment"]
-    success_url = reverse_lazy("recipient_list")
+    success_url = reverse_lazy("mailings:recipient_list")
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -161,7 +161,7 @@ class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipient
     template_name = "mailings/recipient_update.html"
     fields = '__all__'
-    success_url = reverse_lazy("recipient_list")
+    success_url = reverse_lazy("mailings:recipient_list")
 
     def get_queryset(self):
         return Recipient.objects.for_user(self.request.user)
@@ -175,7 +175,7 @@ class RecipientUpdateView(LoginRequiredMixin, UpdateView):
 class RecipientDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipient
     template_name = "mailings/recipient_delete.html"
-    success_url = reverse_lazy("recipient_list")
+    success_url = reverse_lazy("mailings:recipient_list")
 
     def get_queryset(self):
         return Recipient.objects.for_user(self.request.user)

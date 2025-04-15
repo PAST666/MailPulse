@@ -3,7 +3,7 @@
 {% block title %}Страница сообщений{% endblock %}
 {% block content %}    
     <h2>Страница отображения списка сообщений</h2>
-    <a href="{% url 'message_create' %}">Создать сообщение</a>
+    <a href="{% url 'mailings:message_create' %}">Создать сообщение</a>
     {% for message in messages %}
         {% if manager_group_members or user == message.owner %}
             <li>
