@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render
-from django.views.generic import View, ListView, UpdateView, DeleteView, CreateView
+from django.views.generic import View, ListView, UpdateView, DeleteView, CreateView, DetailView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
@@ -10,9 +10,6 @@ from mailings.forms import MailingForm
 from .models import Mailing, Message, Recipient, MailingStatus, MailAttempt
 from .utils import check_manager
 from .managers import MailingManager, MessageManager
-
-
-
 
 
 class MessageListView(LoginRequiredMixin, ListView):
@@ -35,7 +32,6 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
     template_name = "mailings/message_create.html"
     fields = ["title", "text"]
-    #TODO во всех success url добавить название приложения apps
     success_url = reverse_lazy("mailings:message_list")
 
     def form_valid(self, form):
@@ -145,6 +141,19 @@ class RecipientListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
         return context
+    
+class RecipientDetailView(LoginRequiredMixin, DetailView):
+    model = Recipient
+    template_name = "mailings/recipient_list.html"
+    context_object_name = "recipients"
+
+    def get_queryset(self):
+        return Recipient.objects.for_user(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["manager_group_members"] = check_manager(self.request.user)
+        return context
 
 
 class RecipientCreateView(LoginRequiredMixin, CreateView):
@@ -160,16 +169,16 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
 class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipient
     template_name = "mailings/recipient_update.html"
-    fields = '__all__'
+    fields = ["email", "name",  "middle_name", "surname", "comment"]
     success_url = reverse_lazy("mailings:recipient_list")
 
     def get_queryset(self):
         return Recipient.objects.for_user(self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
+    
+    def form_valid(self, form):
+        if form.instance.owner != self.request.user:
+            return self.handle_no_permission()
+        return super().form_valid(form)
 
 
 class RecipientDeleteView(LoginRequiredMixin, DeleteView):
@@ -180,10 +189,6 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         return Recipient.objects.for_user(self.request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
-        return context
 
 class MailAttemptListView(LoginRequiredMixin, ListView):
     model = MailAttempt
