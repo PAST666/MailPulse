@@ -72,7 +72,7 @@ class Mailing(models.Model):
             ("can_block_mailings", "Может отключать все рассылки"),
         ]
 
-    def send_mail(self):
+    def send_mailing(self):
         """
         Метод для отправки писем всем получателям рассылки.
         Создает запись о попытке отправки и меняет статус рассылки.
@@ -108,8 +108,9 @@ class Mailing(models.Model):
 
             except Exception as e:
                 status = MailAttemptStatus.FAILED
-                response = f"Ошибка: {str(e)}"
+                response = "Произошла неожиданная ошибка"
                 failed_count += 1
+                print(e)
 
             # Создаем запись о попытке отправки
             MailAttempt.objects.create(status=status, response=response, mailing=self)

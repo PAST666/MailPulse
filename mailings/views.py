@@ -95,8 +95,7 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         if form.instance.owner != self.request.user:
             return self.handle_no_permission()
-        return super().form_valid(form)
-    
+        return super().form_valid(form)    
 
 
 class MailingUpdateView(LoginRequiredMixin, UpdateView):
