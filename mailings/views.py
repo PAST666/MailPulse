@@ -17,7 +17,7 @@ class MessageListView(LoginRequiredMixin, ListView):
     template_name = "mailings/message_list.html"
     context_object_name = "messages"
     # TODO сделать пагинацию в шаблоне код пагинации
-    # paginate_by = 10
+    paginate_by = 10
 
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
