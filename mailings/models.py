@@ -45,7 +45,6 @@ class Message(models.Model):
         return self.title
 
 
-# TODO методы def переопределять поля, метод send_mailing, менять выбор, отправлять рассылки получателям
 class Mailing(models.Model):
     time_of_first_send = models.DateTimeField("Дата и время первой отправки")
     time_of_last_send = models.DateTimeField("Дата и время последней отправки")
