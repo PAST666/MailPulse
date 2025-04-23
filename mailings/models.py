@@ -127,7 +127,7 @@ class Mailing(models.Model):
         return reverse("mailings:mailing_update", kwargs={"pk": self.pk})
     
     def get_absolute_url_delete(self):
-        return reverse("mailings:time_of_first_send","mailings:mailing_delete", kwargs={"pk": self.pk})
+        return reverse("mailings:mailing_delete", kwargs={"pk": self.pk})
     
     def __str__(self):
         return f"{self.message.title} - {self.status}"
