@@ -1,4 +1,3 @@
-import time
 import random
 from django.core.management.base import BaseCommand
 from mailings.models import Mailing, Message, Recipient, MailingStatus
@@ -7,86 +6,96 @@ from django.utils import timezone
 from random import randint, choice
 from datetime import timedelta
 from django.db.utils import IntegrityError
+from faker import Faker
+
+fake_data = Faker()
+
 
 class Command(BaseCommand):
-    help = 'Заполнение БД случайными данными'
+    help = "Заполнение БД случайными данными"
+
     def create_users(self, num_users=10):
         user_list = []
         for num in range(1, num_users + 1):
-            username = f'user{num}'
-            if User.objects.filter(username = username).exists():
-                self.stdout.write(self.style.WARNING(f'Пользователь {username} уже существует, пропускаем'))
+            username = f"user{num}"
+            if User.objects.filter(username=username).exists():
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"Пользователь {username} уже существует, пропускаем"
+                    )
+                )
                 continue
 
             username = User.objects.create_user(
                 username=username,
-                first_name=f'Имя{randint(1, 100)}',
-                last_name=f'Фамилия{randint(1, 100)}',
+                first_name=f"Имя{randint(1, 100)}",
+                last_name=f"Фамилия{randint(1, 100)}",
                 password="password123",
-                email=f'{username}@example.com',
+                email=f"{username}@example.com",
             )
-            self.stdout.write(self.style.SUCCESS(f'Пользователь {username} успешно создан'))
+            self.stdout.write(
+                self.style.SUCCESS(f"Пользователь {username} успешно создан")
+            )
             user_list.append(username)
         return user_list
 
     def create_recipients(self, user, num_recipients=10):
-        recipients = [f'recipient{num}' for num in range(1, num_recipients + 1)]
-        for recipient in recipients:
-            timestamp = int(time.time() * 1000)
-            random_suffix = random.randint(10000, 99999)
-            current_email = f"recipient{timestamp}_{random_suffix}@example.com"
+        for _ in range(random.randint(3, num_recipients)):
             try:
                 recipient = Recipient.objects.create(
-                    name = f'Получатель{randint(1, 100)}',
-                    middle_name = "Отчетство",
-                    surname = f'Фамилия{randint(1, 100)}',
-                    email = f'{recipient}@example.com',
-                    owner=user
+                    name=fake_data.first_name(),
+                    middle_name=fake_data.first_name(),
+                    surname=fake_data.last_name(),
+                    email=fake_data.email(),
+                    owner=user,
                 )
-                self.stdout.write(self.style.SUCCESS(f'Получатель {recipient} успешно создан'))
+                self.stdout.write(
+                    self.style.SUCCESS(f"Получатель {recipient.email} успешно создан")
+                )
             except IntegrityError:
-                # Если все же возникла ошибка уникальности, просто пропускаем этого получателя
-                self.stdout.write(self.style.WARNING(f'Не удалось создать получателя с email {current_email} - такой email уже существует'))
-                time.sleep(0.01)
-                continue
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"Не удалось создать получателя - такой пользователь уже существует"
+                    )
+                )
 
     def create_messages(self, user, num_messages=10):
-        messages = [f'Сообщение{num}' for num in range(1, num_messages + 1)]
+        messages = [f"Сообщение{num}" for num in range(1, num_messages + 1)]
         for message in messages:
             message = Message.objects.create(
-                title = "Сообщение {num}",
-                text = "Какой-то текст",
-                owner=user
+                title="Сообщение {num}", text="Какой-то текст", owner=user
             )
-            message.title = f'Какой-то текст {randint(1, 100)}'
-            message.text = f'Какой-то текст {randint(1, 100)}'
-            self.stdout.write(self.style.SUCCESS(f'Сообщение {message} успешно создано'))
+            message.title = f"Какой-то текст {randint(1, 100)}"
+            message.text = f"Какой-то текст {randint(1, 100)}"
+            self.stdout.write(
+                self.style.SUCCESS(f"Сообщение {message} успешно создано")
+            )
 
     def create_mailings(self, user, num_mailings=5):
-        mailings = [f'Рассылка{num}' for num in range(1, num_mailings + 1)]
-        for mailing_name in mailings:
-            message = Message.objects.order_by('?').first()
-            recipient_email = f'recipient{mailing_name}@example.com'
-
-            recipient = Recipient.objects.get_or_create(
-                email=recipient_email,
-                defaults={'owner': user}
-            )
-
-            if message and user:
-                mailing = Mailing.objects.create(
-                    message = message,
-                    owner = user,
-                    time_of_first_send = timezone.now(),
-                    time_of_last_send = timezone.now() + timedelta(hours=1),
-                    status = MailingStatus.CREATED,
+        messages = Message.objects.filter(owner=user)
+        recipients = Recipient.objects.filter(owner=user)
+        if not messages.exists() or not recipients.exists():
+            self.stdout.write(
+                self.style.WARNING(
+                    "Невозможно создать рассылку, так как нет сообщений или получателей"
                 )
-                for recipient in Recipient.objects.filter(owner=user):
-                    mailing.recipients.add(recipient)
-                self.stdout.write(self.style.SUCCESS(f'Рассылка {mailing_name} успешно создана'))
-            else:
-                self.stdout.write(self.style.ERROR('Не удалось создать рассылку: отсутствует сообщение, пользователь или получатель'))
-
+            )
+            return
+        for _ in range(random.randint(3, num_mailings)):
+            mailing = Mailing.objects.create(
+                message=random.choice(messages),
+                owner=user,
+                # TODO сделать время с помощью faker
+                time_of_first_send=timezone.now(),
+                time_of_last_send=timezone.now() + timedelta(hours=1),
+                status=MailingStatus.CREATED,
+            )
+            mailing.recipients.set(
+                random.sample(
+                    list(recipients), k=min(random.randint(3, 5), len(recipients))
+                )
+            )
+            self.stdout.write(self.style.SUCCESS(f"Рассылка {mailing} успешно создана"))
 
     def handle(self, *args, **options):
         for user in self.create_users():
