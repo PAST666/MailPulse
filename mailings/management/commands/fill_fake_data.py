@@ -60,13 +60,12 @@ class Command(BaseCommand):
                 )
 
     def create_messages(self, user, num_messages=10):
-        messages = [f"Сообщение{num}" for num in range(1, num_messages + 1)]
-        for message in messages:
+        for _ in range(random.randint (5, num_messages)):
             message = Message.objects.create(
-                title="Сообщение {num}", text="Какой-то текст", owner=user
+                title=fake_data.sentence(nb_words=6).rstrip("."),
+                text=fake_data.text(),
+                owner=user
             )
-            message.title = f"Какой-то текст {randint(1, 100)}"
-            message.text = f"Какой-то текст {randint(1, 100)}"
             self.stdout.write(
                 self.style.SUCCESS(f"Сообщение {message} успешно создано")
             )
