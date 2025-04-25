@@ -14,30 +14,31 @@ fake_data = Faker()
 class Command(BaseCommand):
     help = "Заполнение БД случайными данными"
 
-    def create_users(self, num_users=10):
-        user_list = []
-        for num in range(1, num_users + 1):
-            username = f"user{num}"
+    def create_users(self):
+        created_users = []
+
+        for _ in range(10):
+            username = fake_data.user_name()
             if User.objects.filter(username=username).exists():
                 self.stdout.write(
                     self.style.WARNING(
-                        f"Пользователь {username} уже существует, пропускаем"
+                        f"Пользователь уже существует, пропускаем"
                     )
                 )
                 continue
 
-            username = User.objects.create_user(
+            user = User.objects.create_user(
                 username=username,
-                first_name=f"Имя{randint(1, 100)}",
-                last_name=f"Фамилия{randint(1, 100)}",
-                password="password123",
-                email=f"{username}@example.com",
+                first_name=fake_data.first_name(),
+                last_name=fake_data.last_name(),
+                password=fake_data.password(length=8),
+                email=fake_data.email(),
             )
+            created_users.append(user)
             self.stdout.write(
-                self.style.SUCCESS(f"Пользователь {username} успешно создан")
+                self.style.SUCCESS(f"Пользователь {user} успешно создан")
             )
-            user_list.append(username)
-        return user_list
+        return created_users
 
     def create_recipients(self, user, num_recipients=10):
         for _ in range(random.randint(3, num_recipients)):
@@ -84,10 +85,9 @@ class Command(BaseCommand):
             mailing = Mailing.objects.create(
                 message=random.choice(messages),
                 owner=user,
-                # TODO сделать время с помощью faker
-                time_of_first_send=timezone.now(),
-                time_of_last_send=timezone.now() + timedelta(hours=1),
-                status=MailingStatus.CREATED,
+                time_of_first_send=fake_data.date_time_between(start_date='-30d', end_date='-20d', tzinfo=timezone.get_current_timezone()),
+                time_of_last_send=fake_data.date_time_between(start_date='-10d', end_date='-2d', tzinfo=timezone.get_current_timezone()),
+                status=random.choice(list(MailingStatus)),
             )
             mailing.recipients.set(
                 random.sample(
