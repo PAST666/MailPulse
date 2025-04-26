@@ -35,7 +35,7 @@ class CustomLogoutView(LogoutView):
 class CustomRegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = "users/register.html"
-    success_url = reverse_lazy("email_verification_sent")
+    success_url = reverse_lazy("users:email_verification_sent")
 
     def form_valid(self, form):
         user = form.save()
@@ -126,4 +126,4 @@ class ProfileUpdateView(UpdateView):
         return super(ProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("profile_detail", kwargs={"slug": self.object.slug})
+        return reverse_lazy("users:profile_detail", kwargs={"slug": self.object.slug})

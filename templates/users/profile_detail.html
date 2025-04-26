@@ -37,11 +37,8 @@
             {% endif %}
             
             {% if profile.user == request.user %}
-                <a href="{% url 'profile_edit' %}" class="btn btn-primary">Редактировать профиль</a>
+                <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">Редактировать профиль</a>
             {% endif %}
-            <div class="text-center">
-                <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
-            </div>
         </div>
     </div>
 </div>

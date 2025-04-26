@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "mailings",
     "users",
     'crispy_forms',
+    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [

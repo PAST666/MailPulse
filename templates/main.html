@@ -8,7 +8,7 @@
     <div class='header'>
         <ul class='mainmenu'
             <li class="nav-item">
-                <p><a class="nav-link  text-white" href="{% url 'login' %}">Вход</a> | <a class="nav-link" href="{% url 'register' %}">Регистрация</a></p>
+                <p><a class="nav-link  text-white" href="{% url 'users:login' %}">Вход</a> | <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a></p>
             </li>
         </ul>
     </div>
@@ -17,7 +17,7 @@
         <ul class="dropdown-menu">
             <span class="nav-link"><h2>{{ user.username }}</h2></span>
             <li>
-                <p><a class="dropdown-item  text-white" href="{% url "profile_detail" user.profile.slug %}">Профиль</a></p>
+                <p><a class="dropdown-item  text-white" href="{% url "users:profile_detail" user.profile.slug %}">Профиль</a></p>
             </li>
             {% if user.is_admin or user.is_staff %}
                 <p><li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li></p>
@@ -28,7 +28,7 @@
                 <p><a href="{% url 'mailings:mailing_list' %}">Рассылки</a></p>
                 <p><a href="{% url 'mailings:mail_attempt' %}">Попытки</a></p>
             </div>
-            <form method="post" action="{% url 'logout' %}">
+            <form method="post" action="{% url 'users:logout' %}">
                 {% csrf_token %}
                 <button type="submit">Выйти</button>
             </form>

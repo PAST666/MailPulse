@@ -12,7 +12,7 @@ from .views import (
     EmailVerificationSendView,
 )
 
-app = "users"
+app_name = "users"
 
 urlpatterns = [
     path("login/", CustomLoginView.as_view(), name="login"),
@@ -27,7 +27,7 @@ urlpatterns = [
         EmailVerificationSendView.as_view(),
         name="email_verification_sent",
     ),
-    path("profle/edit/", ProfileUpdateView.as_view(), name="profile_edit"),
+    path("profile/edit/", ProfileUpdateView.as_view(), name="profile_edit"),
     path(
         "profile_detail/<str:slug>/", ProfileDetailView.as_view(), name="profile_detail"
     ),

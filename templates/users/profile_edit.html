@@ -21,7 +21,7 @@
         
         <div class="mt-4">
             <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-            <a href="{% url 'profile_detail' slug=user.profile.slug %}" class="btn btn-secondary">Отмена</a>
+            <a href="{% url 'users:profile_detail' slug=user.profile.slug %}" class="btn btn-secondary">Отмена</a>
         </div>
     </form>
 </div>
