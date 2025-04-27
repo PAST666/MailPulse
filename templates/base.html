@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{% block title %}MailPulse{% endblock %}</title>
+  <title>{% block title %}MailTop{% endblock %}</title>
   {% load django_bootstrap5 %}
   {% bootstrap_css %}
   {% bootstrap_javascript %}
@@ -13,7 +13,7 @@
   <!-- Навигационная панель -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
     <div class="container">
-      <a class="navbar-brand fs-4" href="{% url 'main' %}">MailPulse</a>
+      <a class="navbar-brand fs-4" href="{% url 'main' %}">MailTop</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -84,7 +84,8 @@
     <div class="container">
       <div class="row">
         <div class="col text-center">
-          <p class="text-muted">© 2025 MailPulse. Все права защищены.</p>
+          <p class="text-muted">© 2025 MailTop. Все права защищены.</p>
+          <p class="text-muted">Обратная связь: support@mailtop.com</p>
         </div>
       </div>
     </div>
