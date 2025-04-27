@@ -17,7 +17,6 @@ urlpatterns = [
     path("login/", CustomLoginView.as_view(), name="login"),
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("register/", CustomRegisterView.as_view(), name="register"),
-    #TODO возможно убрать префикс users BaseUrl/login
     path(
         "verify_email/<uuid:token>/", VerifyEmailView.as_view(), name="email_verified"
     ),
