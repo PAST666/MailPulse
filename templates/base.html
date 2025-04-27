@@ -20,6 +20,11 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+          {% if request.path != '/' and request.path != '/main/' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'main' %}">Главная</a>
+            </li>
+          {% endif %}
           {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'mailings:recipient_list' %}">Получатели</a>
@@ -71,7 +76,6 @@
 
   <!-- Основной контент -->
   <main class="container flex-grow-1">
-    {% bootstrap_messages %}
     {% block content %}{% endblock %}
   </main>
 
@@ -80,14 +84,7 @@
     <footer class="bg-light py-4 mt-4">
       <div class="container">
         <div class="row">
-          <div class="col-md-4">
-            <h5>Навигация</h5>
-            <ul class="nav flex-column">
-              <li class="nav-item"><a href="{% url 'main' %}" class="nav-link px-0 text-muted">Главная</a></li>
-              <li class="nav-item"><a href="{% url 'mailings:mailing_list' %}" class="nav-link px-0 text-muted">Рассылки</a></li>
-            </ul>
-          </div>
-          <div class="col-md-8 text-md-end">
+          <div class="col text-center">
             <p class="text-muted">© 2025 MailPulse. Все права защищены.</p>
           </div>
         </div>

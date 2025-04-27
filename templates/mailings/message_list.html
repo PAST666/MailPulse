@@ -1,43 +1,121 @@
 {% extends "base.html" %}
 
-{% block title %}Страница сообщений{% endblock %}
-{% block content %}    
-    <h2>Страница отображения списка сообщений</h2>
-    <a href="{% url 'mailings:message_create' %}">Создать сообщение</a>
-    {% for message in messages %}
-        {% if manager_group_members or user == message.owner %}
-            <li>
-                {{ message.title }} : {{ message.text }} {% if user == message.owner %}<a href="{{ message.get_absolute_url_update }}">Редактировать</a><a href="{{ message.get_absolute_url_delete }}">Удалить</a>{% endif %}
-            </li>
-        {% endif %}
-    {% endfor %}
-    
-    <!-- Пагинация -->
-    {% if page_obj.has_previous or page_obj.has_next %}
-      <nav aria-label="Пагинация отзывов" class="d-flex justify-content-center">
-        <ul class="pagination">
-          {% if page_obj.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
-            </li>
-          {% endif %}
-          {% for page_num in page_obj.paginator.page_range %}
-            {% if page_num >= page_obj.number|add:-2 and page_num <= page_obj.number|add:2 %}
-              <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
-                <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
-              </li>
-            {% endif %}
-          {% endfor %}
-          {% if page_obj.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
-    {% endif %}
-    
-    <div class="text-center">
-        <p><a href="{% url 'main' %}">Вернуться на главную</a></p>
+{% block title %}Сообщения{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-3">Список сообщений</h2>
+            <a href="{% url 'mailings:message_create' %}" class="btn btn-primary mb-4">
+                <i class="bi bi-plus-circle me-2"></i>Создать сообщение
+            </a>
+        </div>
     </div>
+
+    {% if messages %}
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Текст</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for message in messages %}
+                                        {% if manager_group_members or user == message.owner %}
+                                            <tr>
+                                                <td>{{ message.title }}</td>
+                                                <td>{{ message.text|truncatechars:100 }}</td>
+                                                <td>
+                                                    {% if user == message.owner %}
+                                                        <div class="btn-group" role="group">
+                                                            <a href="{{ message.get_absolute_url_update }}" class="btn btn-sm btn-outline-primary">
+                                                                <i class="bi bi-pencil me-1"></i>Редактировать
+                                                            </a>
+                                                            <a href="{{ message.get_absolute_url_delete }}" class="btn btn-sm btn-outline-danger">
+                                                                <i class="bi bi-trash me-1"></i>Удалить
+                                                            </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-info">
+                    У вас пока нет сообщений. Создайте новое сообщение, нажав на кнопку выше.
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Пагинация -->
+    {% if page_obj.paginator.num_pages > 1 %}
+        <div class="row mt-4">
+            <div class="col">
+                <nav aria-label="Навигация по страницам">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="Первая">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Предыдущая">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;</span>
+                            </li>
+                        {% endif %}
+
+                        {% for page_num in page_obj.paginator.page_range %}
+                            {% if page_num >= page_obj.number|add:-2 and page_num <= page_obj.number|add:2 %}
+                                <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Следующая">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Последняя">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;</span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

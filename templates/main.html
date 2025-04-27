@@ -6,34 +6,35 @@
         <h1>Это главная страница</h1>
         <h1>Вы не авторизованы</h1>
     {% else %}
-        <h1>Это главная страница</h1>
-        <ul class="dropdown-menu">
-            <span class="nav-link"><h2>{{ user.username }}</h2></span>
-            <li>
-                <p><a class="dropdown-item  text-white" href="{% url "users:profile_detail" user.profile.slug %}">Профиль</a></p>
-            </li>
-            {% if user.is_admin or user.is_staff %}
-                <p><li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Админ панель</a></li></p>
-            {% endif %}
-            <div class="text-center">
-                <p><a href="{% url 'mailings:message_list' %}">Сообщения</a></p>
-                <p><a href="{% url 'mailings:recipient_list' %}">Получатели</a></p>
-                <p><a href="{% url 'mailings:mailing_list' %}">Рассылки</a></p>
-                <p><a href="{% url 'mailings:mail_attempt' %}">Попытки</a></p>
+        <div class="card p-4 mt-4 text-center">
+            <h3>Статистика ваших рассылок</h3>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">Всего рассылок</h5>
+                            <p class="card-text display-4">{{ total_mailings }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">Активных рассылок</h5>
+                            <p class="card-text display-4">{{ active_mailings }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">Уникальных получателей</h5>
+                            <p class="card-text display-4">{{ unique_recipients }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <form method="post" action="{% url 'users:logout' %}">
-                {% csrf_token %}
-                <button type="submit">Выйти</button>
-            </form>
-        </ul>
-
-        {% comment %} {% if can_view_all_mailings %}
-            <p>Показывается количество рассылок</p>
-        {% endif %}
-
-        {% if can_block_mailings %}
-            <p>Показываются блокировки рассылок</p>
-        {% endif %} {% endcomment %}
+        </div>
     {% endif %}
 {% endblock %}
 {% block footer %}{% endblock %}

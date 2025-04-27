@@ -17,7 +17,7 @@ class MessageListView(LoginRequiredMixin, ListView):
     template_name = "mailings/message_list.html"
     context_object_name = "messages"
     # TODO сделать пагинацию в шаблоне код пагинации
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
         return Message.objects.for_user(self.request.user)
@@ -132,6 +132,7 @@ class RecipientListView(LoginRequiredMixin, ListView):
     model = Recipient
     template_name = "mailings/recipient_list.html"
     context_object_name = "recipients"
+    paginate_by = 20
 
     def get_queryset(self):
         return Recipient.objects.for_user(self.request.user)
