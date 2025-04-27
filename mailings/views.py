@@ -91,10 +91,11 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         form.fields['message'].queryset = Message.objects.for_user(self.request.user)
         form.fields['recipients'].queryset = Recipient.objects.for_user(self.request.user)
         return form
-
+    #TODO уточнить
     def form_valid(self, form):
-        if form.instance.owner != self.request.user:
-            return self.handle_no_permission()
+        # if form.instance.owner != self.request.user:
+        #     return self.handle_no_permission()
+        form.instance.owner = self.request.user
         return super().form_valid(form)    
 
 

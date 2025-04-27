@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
 {% block title %}Главная{% endblock %}
-{% block content %}  
+{% block content %} 
     {% if not user.is_authenticated %}
-        <h1>Это главная страница</h1>
-        <h1>Вы не авторизованы</h1>
+    <div class="text-center">
+        <h1>Добро пожаловать на сервис создания рассылок!</h1>
+        <div class="mt-4">
+            <img src="/media/images/box/mailbox.jpg" alt="Почтовый ящик" class="img-fluid mx-auto d-block" style="max-width: 500px;">
+        </div>
+    </div>
     {% else %}
+        <div class="mt-4">
+            <img src="/media/images/box/mailbox.jpg" alt="Почтовый ящик" class="img-fluid mx-auto d-block" style="max-width: 500px;">
+        </div>
         <div class="card p-4 mt-4 text-center">
             <h3>Статистика ваших рассылок</h3>
             <div class="row mt-3">
@@ -37,4 +44,3 @@
         </div>
     {% endif %}
 {% endblock %}
-{% block footer %}{% endblock %}
