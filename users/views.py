@@ -45,7 +45,7 @@ class CustomRegisterView(CreateView):
         activation_token = ActivationToken.objects.create(user=user)
         verification_url = self.request.build_absolute_uri(
             reverse_lazy(
-                "email_verified", kwargs={"token": str(activation_token.token)}
+                "users:email_verified", kwargs={"token": str(activation_token.token)}
             ),
         )
 
