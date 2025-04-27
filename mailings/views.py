@@ -208,11 +208,21 @@ class MailAttemptListView(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["manager_group_members"] = check_manager(self.request.user)
+        user = self.request.user
+        is_manager = check_manager(user)
+        context["manager_group_members"] = is_manager
         
-        # Добавляем статистику
-        context["successful_attempts"] = self.get_queryset().filter(status="Успешно").count()
-        context["failed_attempts"] = self.get_queryset().filter(status="Не успешно").count()
-        context["total_attempts"] = self.get_queryset().count()
+        # Статистика для текущего пользователя
+        user_attempts = MailAttempt.objects.filter(mailing__owner=user)
+        context["user_successful_attempts"] = user_attempts.filter(status="Успех").count()
+        context["user_failed_attempts"] = user_attempts.filter(status="Неуспешно").count()
+        context["user_total_attempts"] = user_attempts.count()
+        
+        # Статистика для всех пользователей (видна только менеджерам)
+        if is_manager:
+            all_attempts = MailAttempt.objects.all()
+            context["all_successful_attempts"] = all_attempts.filter(status="Успешно").count()
+            context["all_failed_attempts"] = all_attempts.filter(status="Не успешно").count()
+            context["all_total_attempts"] = all_attempts.count()
         
         return context

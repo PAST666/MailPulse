@@ -1,95 +1,126 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block title %}Попытки рассылок{% endblock %}
 
 {% block content %}
-    <h2>История попыток рассылок</h2>
-    
-    <div class="statistics-panel mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">Статистика рассылок</h3>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="stat-item text-success">
-                            <h3>{{ successful_attempts }}</h3>
-                            <p>Успешных отправок</p>
-                        </div>
+<div class="container">
+  <h1 class="mb-4">Попытки рассылок</h1>
+
+  <!-- Статистика текущего пользователя -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Статистика Ваших попыток</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Успешных</h5>
+                        <p class="card-text display-4">{{ user_successful_attempts }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <div class="stat-item text-danger">
-                            <h3>{{ failed_attempts }}</h3>
-                            <p>Неудачных отправок</p>
-                        </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Неуспешных</h5>
+                        <p class="card-text display-4">{{ user_failed_attempts }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <div class="stat-item text-primary">
-                            <h3>{{ total_attempts }}</h3>
-                            <p>Всего попыток</p>
-                        </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Всего</h5>
+                        <p class="card-text display-4">{{ user_total_attempts }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    {% if mail_attempts %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Дата и время</th>
-                    <th>Рассылка</th>
-                    {% if manager_group_members %}
-                    <th>Владелец</th>
-                    {% endif %}
-                    <th>Статус</th>
-                    <th>Ответ сервера</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for attempt in mail_attempts %}
-                    <tr>
-                        <td>{{ attempt.attempt_datetime|date:"d.m.Y H:i:s" }}</td>
-                        <td>{{ attempt.mailing.message.title }}</td>
-                        {% if manager_group_members %}
-                        <td>{{ attempt.mailing.owner.username }}</td>
-                        {% endif %}
-                        <td>
-                            {% if attempt.status == "Успешно" %}
-                                <span class="badge bg-success">{{ attempt.status }}</span>
-                            {% else %}
-                                <span class="badge bg-danger">{{ attempt.status }}</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if attempt.server_response %}
-                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" 
-                                        data-bs-target="#response-{{ attempt.id }}" aria-expanded="false">
-                                    Показать ответ
-                                </button>
-                                <div class="collapse mt-2" id="response-{{ attempt.id }}">
-                                    <div class="card card-body">
-                                        <pre>{{ attempt.server_response }}</pre>
-                                    </div>
-                                </div>
-                            {% else %}
-                                <span class="text-muted">Нет данных</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <div class="alert alert-info">
-            <p>Пока нет записей о попытках рассылок.</p>
-        </div>
-    {% endif %}
-    
-    {% if manager_group_members %}
-        <div class="admin-section mt-4">
-            <div class="alert alert-secondary">
-                <h3>Информация для менеджеров</h3>
-                <p>Вы видите все попытки рассылок в системе, так как являетесь менеджером.</p>
+  </div>
+
+  <!-- Статистика всех рассылок (только для менеджеров) -->
+  {% if manager_group_members %}
+  <div class="card mb-4">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">Статистика всех рассылок</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">Успешных</h5>
+              <p class="card-text display-4">{{ all_successful_attempts }}</p>
             </div>
+          </div>
         </div>
-    {% endif %}
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">Неуспешных</h5>
+              <p class="card-text display-4">{{ all_failed_attempts }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">Всего</h5>
+              <p class="card-text display-4">{{ all_total_attempts }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Список попыток рассылок -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Список попыток рассылок</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Рассылка</th>
+              <th>Время попытки</th>
+              <th>Статус</th>
+              {% if manager_group_members %}
+              <th>Владелец</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for attempt in mail_attempts %}
+            <tr>
+              <td>{{ attempt.mailing.name }}</td>
+              <td>{{ attempt.time_of_attempt }}</td>
+              <td>
+                {% if attempt.status == "Успешно" %}
+                <span class="badge bg-success">{{ attempt.status }}</span>
+                {% else %}
+                <span class="badge bg-danger">{{ attempt.status }}</span>
+                {% endif %}
+              </td>
+              {% if manager_group_members %}
+              <td>{{ attempt.mailing.owner.username }}</td>
+              {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="{% if manager_group_members %}4{% else %}3{% endif %}" class="text-center">Нет данных о попытках рассылок</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

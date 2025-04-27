@@ -7,7 +7,7 @@
             <h1 class="mb-4">Список получателей</h1>
             
             <div class="d-flex justify-content-between mb-3">
-                <a href="{% url 'mailings:recipient_create' %}" class="btn btn-primary">Создать нового получателя</a>
+                <a href="{% url 'mailings:recipient_create' %}" class="btn btn-success">Создать нового получателя</a>
             </div>
             
             {% if recipients %}
@@ -31,11 +31,10 @@
                                     <td>{{ recipient.comment|truncatechars:50 }}</td>
                                     <td>{{ recipient.owner.username }}</td>
                                     <td>
-                                        <div class="btn-group" role="group">
                                             {% if user == recipient.owner %}
                                                 <!-- Владелец может редактировать и удалять -->
-                                                <a href="{{ recipient.get_absolute_url_update }}" class="btn btn-sm btn-outline-primary">Редактировать</a>
-                                                <a href="{{ recipient.get_absolute_url_delete }}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                                                <a href="{{ recipient.get_absolute_url_update }}" class="btn btn-sm btn-warning">Редактировать</a>
+                                                <a href="{{ recipient.get_absolute_url_delete }}" class="btn btn-sm btn-danger">Удалить</a>
                                             {% endif %}
                                             
                                             {% if manager_group_members and user != recipient.owner %}
@@ -46,7 +45,6 @@
                                                     <a href="#" class="btn btn-sm btn-outline-warning">Блокировать</a>
                                                 {% endif %}
                                             {% endif %}
-                                        </div>
                                     </td>
                                 </tr>
                                 {% endif %}
