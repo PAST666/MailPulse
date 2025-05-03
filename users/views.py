@@ -3,8 +3,8 @@ from django.contrib.auth.views import PasswordResetConfirmView as BasePasswordRe
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
@@ -14,7 +14,6 @@ from django.db import transaction
 from .forms import (
     CustomLoginForm,
     CustomUserCreationForm,
-    # ProfileUserForm,
     UserUpdateForm,
     ProfileUpdateForm,
 )
@@ -56,13 +55,21 @@ class CustomRegisterView(CreateView):
                 "users:email_verified", kwargs={"token": str(activation_token.token)}
             ),
         )
+        html_message = render_to_string(
+            'users/email/verification_email.html',
+            {
+                'user': user,
+                'verification_link': verification_url,
+            }
+        )        
 
         send_mail(
-            "Подтверждение регистрации в MailPulse",
-            f"Для активации перейдите по ссылке: {verification_url}",
+            "Подтверждение регистрации в MailTop",
+            "",
             settings.EMAIL_HOST_USER,
             [user.email],
             fail_silently=False,
+            html_message=html_message,
         )
 
         return super().form_valid(form)
@@ -135,6 +142,7 @@ class ProfileUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("users:profile_detail", kwargs={"slug": self.object.slug})
+    
 
 class PasswordResetView(BasePasswordResetView):
     template_name = "users/password_reset.html"
@@ -142,10 +150,6 @@ class PasswordResetView(BasePasswordResetView):
     html_email_template_name = "users/password_reset_email.html"
     success_url = reverse_lazy("users:password_reset_done")
 
-    def form_valid(self, form):
-        print("Форма сброса пароля отправлена")
-        return super().form_valid(form)
-    
 class CustomPasswordResetConfirmView(BasePasswordResetConfirmView):
     template_name = "users/password_reset_confirm.html"
     success_url = reverse_lazy("users:password_reset_complete")

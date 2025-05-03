@@ -1,1 +1,1 @@
-# MailPulse
+# MailTop
