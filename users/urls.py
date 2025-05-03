@@ -9,6 +9,8 @@ from .views import (
     ProfileUpdateView,
     ProfileDetailView,
     EmailVerificationSendView,
+    PasswordResetView,
+    CustomPasswordResetConfirmView
 )
 
 app_name = "users"
@@ -30,28 +32,26 @@ urlpatterns = [
         "profile_detail/<str:slug>/", ProfileDetailView.as_view(), name="profile_detail"
     ),
     path(
-        "reset_password/",
-        auth_views.PasswordResetView.as_view(template_name="users/reset_password.html", success_url="/users/reset_password_sent/"),
-        name="reset_password",
+        "password_reset/",
+        PasswordResetView.as_view(),
+        name="password_reset",
     ),
     path(
-        "reset_password_sent/",
+        "password_reset/done/",
         auth_views.PasswordResetDoneView.as_view(
-            template_name="users/password_reset_sent.html"
+            template_name="users/password_reset_done.html"
         ),
         name="password_reset_done",
     ),
     path(
-        "reset/<uidb64>/<token>",
-        auth_views.PasswordResetConfirmView.as_view(
-            template_name="users/password_reset_form.html"
-        ),
+        "reset/<uidb64>/<token>/",
+            CustomPasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
     path(
-        "reset_password_complete/",
+        "password_reset/complete/",
         auth_views.PasswordResetCompleteView.as_view(
-            template_name="users/password_reset_done.html"
+            template_name="users/password_reset_complete.html"
         ),
         name="password_reset_complete",
     ),

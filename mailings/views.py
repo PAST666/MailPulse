@@ -68,7 +68,10 @@ class MailingListView(LoginRequiredMixin, ListView):
     context_object_name = "mailings"
 
     def get_queryset(self):
-        return Mailing.objects.for_user(self.request.user)
+        user = self.request.user
+        if user.has_perm('mailings.can_view_all_mailings'):
+            return Mailing.objects.all()
+        return Mailing.objects.filter(owner=user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

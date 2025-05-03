@@ -1,7 +1,10 @@
 import os
 
 from pathlib import Path
-from django.conf.global_settings import LOGIN_URL, STATICFILES_DIRS
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -96,21 +99,17 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = "main"
-LOGOUT_REDIRECT_URL = "main"
+# LOGIN_REDIRECT_URL = "main"
+# LOGOUT_REDIRECT_URL = "main"
 
 AUTH_USER_MODEL = "users.User"
 
-EMAIL_BACKEND = os.getenv(
-    'EMAIL_BACKEND',
-    default='django.core.mail.backends.console.EmailBackend'
-)
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 

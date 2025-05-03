@@ -1,3 +1,5 @@
+from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
+from django.contrib.auth.views import PasswordResetConfirmView as BasePasswordResetConfirmView
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
@@ -26,10 +28,16 @@ class CustomLoginView(LoginView):
     template_name = "users/login.html"
     success_url = reverse_lazy("main")
 
+    def get_success_url(self):
+        return reverse_lazy("main")
+
 
 class CustomLogoutView(LogoutView):
     template_name = "users/logout.html"
     success_url = reverse_lazy("main")
+
+    def get_success_url(self):
+        return reverse_lazy("main")
 
 
 class CustomRegisterView(CreateView):
@@ -127,3 +135,17 @@ class ProfileUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("users:profile_detail", kwargs={"slug": self.object.slug})
+
+class PasswordResetView(BasePasswordResetView):
+    template_name = "users/password_reset.html"
+    email_template_name = "users/password_reset_email.html"
+    html_email_template_name = "users/password_reset_email.html"
+    success_url = reverse_lazy("users:password_reset_done")
+
+    def form_valid(self, form):
+        print("Форма сброса пароля отправлена")
+        return super().form_valid(form)
+    
+class CustomPasswordResetConfirmView(BasePasswordResetConfirmView):
+    template_name = "users/password_reset_confirm.html"
+    success_url = reverse_lazy("users:password_reset_complete")
