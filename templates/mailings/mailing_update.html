@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% block title %}Редактировать рассылку{% endblock %}
 {% block content %}
     <h2>Редактировать рассылку</h2>
     <p>Измените параметры рассылки</p>        
@@ -7,8 +8,8 @@
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn">Сохранить</button>
-            <p><a href="{% url 'mailings:mailing_list' %}" class="btn">Назад</a></p>
+            <p><button type="submit" class="btn btn-success">Сохранить</button></p>
+            <p><a href="{% url 'mailings:mailing_list' %}" class="btn btn-secondary">Назад</a></p>
         </form>
     </div>
 {% endblock %}

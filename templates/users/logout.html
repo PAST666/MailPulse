@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Логаут</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Logout{% endblock %}
+{% block content %}
     <div class="container py-4">
         <div class="row">
             <section class="col-12 mb-4">
-                <h2>Логаут</h2>
+                <h2>Вы не авторизованы</h2>
             </section>
         </div>
     </div>
-    <div class="text-center">
-        <a href="{% url 'main' %}">Вернуться на главную</a>
-    </div>    
-</body>
-</html>
+{% endblock %}

@@ -11,8 +11,8 @@
         </div>
         <form method="post">
             {% csrf_token %}
-            <button type="submit" class="btn">Удалить</button>
-            <p><a href="{% url 'mailings:message_list' %}" class="btn">Назад</a></p>
+            <p><button type="submit" class="btn btn-danger">Удалить</button></p>
+            <p><a href="{% url 'mailings:message_list' %}" class="btn btn-secondary">Назад</a></p>
         </form>
     {% else %}
         <p>У вас нет прав для удаления этого сообщения.</p>
