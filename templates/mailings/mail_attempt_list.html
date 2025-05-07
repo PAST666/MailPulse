@@ -87,9 +87,8 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>Рассылка</th>
-              <th>Время попытки</th>
-              <th>Статус</th>
+              <th class="text-center">Время попытки</th>
+              <th class="text-center">Статус</th>
               {% if manager_group_members %}
               <th>Владелец</th>
               {% endif %}
@@ -98,13 +97,12 @@
           <tbody>
             {% for attempt in mail_attempts %}
             <tr>
-              <td>{{ attempt.mailing.name }}</td>
-              <td>{{ attempt.time_of_attempt }}</td>
-              <td>
-                {% if attempt.status == "Успешно" %}
-                <span class="badge bg-success">{{ attempt.status }}</span>
+              <td class="text-center">{{ attempt.time_of_attempt }}</td>
+              <td class="text-center">
+                {% if attempt.status.lower == "success" or attempt.status.lower == "успех" %}
+                  <span class="badge bg-success">{{ attempt.status }}</span>
                 {% else %}
-                <span class="badge bg-danger">{{ attempt.status }}</span>
+                  <span class="badge bg-danger">{{ attempt.status }}</span>
                 {% endif %}
               </td>
               {% if manager_group_members %}

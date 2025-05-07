@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from mailings.models import Mailing, Message, Recipient, MailingStatus
 from users.models import User
 from django.utils import timezone
-from random import randint, choice
 from datetime import timedelta
 from django.db.utils import IntegrityError
 from faker import Faker
@@ -21,9 +20,7 @@ class Command(BaseCommand):
             username = fake_data.user_name()
             if User.objects.filter(username=username).exists():
                 self.stdout.write(
-                    self.style.WARNING(
-                        f"Пользователь уже существует, пропускаем"
-                    )
+                    self.style.WARNING(f"Пользователь уже существует, пропускаем")
                 )
                 continue
 
@@ -35,9 +32,7 @@ class Command(BaseCommand):
                 email=fake_data.email(),
             )
             created_users.append(user)
-            self.stdout.write(
-                self.style.SUCCESS(f"Пользователь {user} успешно создан")
-            )
+            self.stdout.write(self.style.SUCCESS(f"Пользователь {user} успешно создан"))
         return created_users
 
     def create_recipients(self, user, num_recipients=10):
@@ -61,11 +56,11 @@ class Command(BaseCommand):
                 )
 
     def create_messages(self, user, num_messages=10):
-        for _ in range(random.randint (5, num_messages)):
+        for _ in range(random.randint(5, num_messages)):
             message = Message.objects.create(
                 title=fake_data.sentence(nb_words=6).rstrip("."),
                 text=fake_data.text(),
-                owner=user
+                owner=user,
             )
             self.stdout.write(
                 self.style.SUCCESS(f"Сообщение {message} успешно создано")
@@ -85,8 +80,16 @@ class Command(BaseCommand):
             mailing = Mailing.objects.create(
                 message=random.choice(messages),
                 owner=user,
-                time_of_first_send=fake_data.date_time_between(start_date='-30d', end_date='-20d', tzinfo=timezone.get_current_timezone()),
-                time_of_last_send=fake_data.date_time_between(start_date='-10d', end_date='-2d', tzinfo=timezone.get_current_timezone()),
+                time_of_first_send=fake_data.date_time_between(
+                    start_date="-30d",
+                    end_date="-20d",
+                    tzinfo=timezone.get_current_timezone(),
+                ),
+                time_of_last_send=fake_data.date_time_between(
+                    start_date="-10d",
+                    end_date="-2d",
+                    tzinfo=timezone.get_current_timezone(),
+                ),
                 status=random.choice(list(MailingStatus)),
             )
             mailing.recipients.set(

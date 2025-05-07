@@ -36,6 +36,10 @@
                         <td>{{ mailing.recipients.count }}</td>
                         <td>
                             {% if user == mailing.owner %}
+                                <form action="{% url 'mailings:mailing_detail' mailing.pk %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-success">Отправить</button>
+                                </form>                            
                                 <a href="{% url 'mailings:mailing_update' mailing.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
                                 <a href="{% url 'mailings:mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
                             {% endif %}

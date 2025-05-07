@@ -1,5 +1,7 @@
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
-from django.contrib.auth.views import PasswordResetConfirmView as BasePasswordResetConfirmView
+from django.contrib.auth.views import (
+    PasswordResetConfirmView as BasePasswordResetConfirmView,
+)
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
@@ -50,18 +52,19 @@ class CustomRegisterView(CreateView):
         user.save()
 
         activation_token = ActivationToken.objects.create(user=user)
+
         verification_url = self.request.build_absolute_uri(
             reverse_lazy(
                 "users:email_verified", kwargs={"token": str(activation_token.token)}
             ),
         )
         html_message = render_to_string(
-            'users/email/verification_email.html',
+            "users/email/verification_email.html",
             {
-                'user': user,
-                'verification_link': verification_url,
-            }
-        )        
+                "user": user,
+                "verification_link": verification_url,
+            },
+        )
 
         send_mail(
             "Подтверждение регистрации в MailTop",
@@ -73,7 +76,7 @@ class CustomRegisterView(CreateView):
         )
 
         return super().form_valid(form)
-    
+
 
 class EmailVerificationSendView(TemplateView):
     template_name = "users/email_verification_sent.html"
@@ -84,9 +87,8 @@ class VerifyEmailView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         try:
-            token = ActivationToken.objects.get(
-                token=self.kwargs.get("token"),
-            )
+            user_token = self.kwargs.get("user_token")
+            token = ActivationToken.objects.get(token=user_token)
         except ActivationToken.DoesNotExist:
             return self.render_to_response({"error": "Недействительная ссылка"})
 
@@ -142,13 +144,14 @@ class ProfileUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("users:profile_detail", kwargs={"slug": self.object.slug})
-    
+
 
 class PasswordResetView(BasePasswordResetView):
     template_name = "users/password_reset.html"
     email_template_name = "users/password_reset_email.html"
     html_email_template_name = "users/password_reset_email.html"
     success_url = reverse_lazy("users:password_reset_done")
+
 
 class CustomPasswordResetConfirmView(BasePasswordResetConfirmView):
     template_name = "users/password_reset_confirm.html"

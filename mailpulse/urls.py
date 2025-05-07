@@ -6,10 +6,10 @@ from django.conf.urls.static import static
 from .views import MainView
 
 urlpatterns = [
-    path('', MainView.as_view(), name='main'),
-    path('', include("mailings.urls")),
-    path('users/', include("users.urls")),
-    path('admin/', admin.site.urls),
+    path("", MainView.as_view(), name="main"),
+    path("", include("mailings.urls")),
+    path("users/", include("users.urls")),
+    path("admin/", admin.site.urls),
 ]
 
 if settings.DEBUG:

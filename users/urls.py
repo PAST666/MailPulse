@@ -20,7 +20,7 @@ urlpatterns = [
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("register/", CustomRegisterView.as_view(), name="register"),
     path(
-        "verify_email/<uuid:token>/", VerifyEmailView.as_view(), name="email_verified"
+        "verify_email/<uuid:user_token>/", VerifyEmailView.as_view(), name="email_verified"
     ),
     path(
         "email-verification-sent/",

@@ -7,7 +7,6 @@ from django.core.validators import FileExtensionValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
-from datetime import date, timedelta
 
 from .utils import unique_slugify
 
@@ -17,10 +16,10 @@ TOKEN_EXPIRES_MINUTES = 15
 
 class User(AbstractUser):
     first_name = models.CharField(
-        "Имя", max_length=MAX_NAME_LENGTH, null=True, blank=True
+        "Имя", max_length=MAX_NAME_LENGTH, blank=True
     )
     last_name = models.CharField(
-        "Фамилия", max_length=MAX_NAME_LENGTH, null=True, blank=True
+        "Фамилия", max_length=MAX_NAME_LENGTH, blank=True
     )
     email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
     photo = models.ImageField(

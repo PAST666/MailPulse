@@ -1,4 +1,3 @@
-import email
 from django import forms
 from django.contrib.auth.forms import (
     AuthenticationForm,
@@ -56,7 +55,7 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             }
         )
     )
-    
+
 
 class UserUpdateForm(forms.ModelForm):
 

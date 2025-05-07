@@ -10,6 +10,7 @@ class MessageAdmin(admin.ModelAdmin):
     )
     search_fields = ("title", "text")
 
+
 @admin.register(Recipient)
 class RecipientAdmin(admin.ModelAdmin):
     list_display = (
@@ -21,6 +22,7 @@ class RecipientAdmin(admin.ModelAdmin):
     )
     search_fields = ("name", "surname", "email")
 
+
 @admin.register(MailAttempt)
 class MailAttemptAdmin(admin.ModelAdmin):
     list_display = (
@@ -29,6 +31,7 @@ class MailAttemptAdmin(admin.ModelAdmin):
         "response",
     )
     search_fields = ("status", "answer")
+
 
 @admin.register(Mailing)
 class MailingAdmin(admin.ModelAdmin):

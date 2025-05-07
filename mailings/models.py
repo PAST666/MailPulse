@@ -37,7 +37,7 @@ class Message(models.Model):
 
     def get_absolute_url_update(self):
         return reverse("mailings:message_update", kwargs={"pk": self.pk})
-    
+
     def get_absolute_url_delete(self):
         return reverse("mailings:message_delete", kwargs={"pk": self.pk})
 
@@ -54,7 +54,8 @@ class Mailing(models.Model):
     message = models.ForeignKey(
         "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
     )
-    recipients = models.ManyToManyField("Recipient", related_name="mailings", verbose_name="Получатели"
+    recipients = models.ManyToManyField(
+        "Recipient", related_name="mailings", verbose_name="Получатели"
     )
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="mailings"
@@ -124,12 +125,13 @@ class Mailing(models.Model):
             "failed": failed_count,
             "total": success_count + failed_count,
         }
+
     def get_absolute_url_update(self):
         return reverse("mailings:mailing_update", kwargs={"pk": self.pk})
-    
+
     def get_absolute_url_delete(self):
         return reverse("mailings:mailing_delete", kwargs={"pk": self.pk})
-    
+
     def __str__(self):
         return f"{self.message.title} - {self.status}"
 
@@ -148,10 +150,10 @@ class Recipient(models.Model):
     class Meta:
         verbose_name = "Получатель"
         verbose_name_plural = "Получатели"
-    
+
     def get_absolute_url_update(self):
         return reverse("mailings:recipient_update", kwargs={"pk": self.pk})
-    
+
     def get_absolute_url_delete(self):
         return reverse("mailings:recipient_delete", kwargs={"pk": self.pk})
 
