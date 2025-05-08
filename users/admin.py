@@ -11,8 +11,9 @@ class UserAdmin(BaseUserAdmin):
         "email",
         "phone_number",
         "photo",
+        "is_blocked",
     )
-    search_fields = ("first_name", "last_name", "email", "phone_number", "photo")
+    search_fields = ("first_name", "last_name", "email", "phone_number", "photo", "username")
 
 
 @admin.register(Profile)

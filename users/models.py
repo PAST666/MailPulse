@@ -34,6 +34,7 @@ class User(AbstractUser):
         blank=True,
     )
     country = models.CharField("Страна", max_length=MAX_NAME_LENGTH, blank=True)
+    is_blocked = models.BooleanField("Заблокирован", default=False)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 

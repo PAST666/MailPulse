@@ -10,7 +10,8 @@ from .views import (
     ProfileDetailView,
     EmailVerificationSendView,
     PasswordResetView,
-    CustomPasswordResetConfirmView
+    CustomPasswordResetConfirmView,
+    BlockUserView
 )
 
 app_name = "users"
@@ -55,4 +56,5 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+        path("<int:user_id>/block/", BlockUserView.as_view(), name="user_block"),
 ]

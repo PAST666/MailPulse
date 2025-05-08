@@ -139,7 +139,6 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
 
 class MailingDetailView(LoginRequiredMixin, DetailView):
     model = Mailing
-    # TODO создать шаблон
     template_name = "mailings/mailing_detail.html"
     context_object_name = "mailing"
 

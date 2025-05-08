@@ -34,7 +34,7 @@ mailing_urls = [
 ]
 
 recipient_urls = [
-    path("recipient/", RecipientListView.as_view(), name="recipient_list"),
+    path("", RecipientListView.as_view(), name="recipient_list"),
     path("recipient/create", RecipientCreateView.as_view(), name="recipient_create"),
     path(
         "recipient/<int:pk>/update",
