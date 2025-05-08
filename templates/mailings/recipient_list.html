@@ -19,7 +19,7 @@
                                 <th>Email</th>
                                 <th>ФИО</th>
                                 <th>Комментарий</th>
-                                <th>Владелец</th>
+                                <th>Автор</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
@@ -40,15 +40,13 @@
                                             {% endif %}
                                             
                                             {% if manager_group_members and user != recipient.owner %}
-                                                <form action="{% url 'users:user_block' recipient.owner.pk %}" method="post" style="display: inline;">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-sm btn-success">Блок</button>
-                                                </form>  
-                                                <!-- Менеджеры могут блокировать/разблокировать, но не редактировать/удалять чужие данные -->
-                                                {% if recipient.is_blocked %}
-                                                    <a href="#" class="btn btn-sm btn-outline-success">Разблокировать</a>
+                                                {% if recipient.owner.is_blocked %}
+                                                    <span class="btn btn-sm btn-secondary">Заблокирован</span>
                                                 {% else %}
-                                                    <a href="#" class="btn btn-sm btn-outline-danger">Блокировать</a>
+                                                    <form action="{% url 'users:user_block' recipient.owner.pk %}" method="post" style="display: inline;">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-success">Блок автора</button>
+                                                    </form>  
                                                 {% endif %}
                                             {% endif %}
                                     </td>
