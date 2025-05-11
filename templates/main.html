@@ -2,9 +2,15 @@
 
 {% block title %}Главная{% endblock %}
 {% block content %} 
-    {% if not user.is_authenticated %}
+    {% if not user.is_authenticated or user.is_blocked %}
     <div class="text-center">
         <h1>Добро пожаловать в сервис создания рассылок!</h1>
+        {% if user.is_blocked %}
+        <div class="alert alert-danger mt-3">
+            <h4>Вы заблокированы!</h4>
+            <p>Ваш аккаунт был заблокирован. Обратитесь в службу поддержки для выяснения причин.</p>
+        </div>
+        {% endif %}
         <div class="mt-4">
             <img src="/media/images/box/mailbox.jpg" alt="Почтовый ящик" class="img-fluid mx-auto d-block" style="max-width: 500px;">
         </div>

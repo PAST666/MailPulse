@@ -25,7 +25,7 @@
               <a class="nav-link" href="{% url 'main' %}">Главная</a>
             </li>
           {% endif %}
-          {% if user.is_authenticated %}
+          {% if user.is_authenticated and not user.is_blocked%}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'mailings:recipient_list' %}">Получатели</a>
             </li>
