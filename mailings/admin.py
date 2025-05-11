@@ -40,5 +40,6 @@ class MailingAdmin(admin.ModelAdmin):
         "time_of_last_send",
         "message",
         "status",
+        "is_blocked",
     )
     search_fields = ("status", "message")

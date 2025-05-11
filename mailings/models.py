@@ -60,6 +60,7 @@ class Mailing(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="mailings"
     )
+    is_blocked = models.BooleanField("Заблокирован", default=False)
     objects = MailingManager()
 
     class Meta:

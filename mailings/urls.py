@@ -14,6 +14,8 @@ from .views import (
     RecipientDeleteView,
     MailAttemptListView,
     MailingDetailView,
+    MailingBlockView,
+    MailingUnblockView,
 )
 
 app_name = "mailings"
@@ -31,6 +33,8 @@ mailing_urls = [
     path("<int:pk>/", MailingDetailView.as_view(), name="mailing_detail"),
     path("<int:pk>/update/", MailingUpdateView.as_view(), name="mailing_update"),
     path("<int:pk>/delete/", MailingDeleteView.as_view(), name="mailing_delete"),
+    path("<int:pk>/block/", MailingBlockView.as_view(), name="mailing_block"),
+    path("<int:pk>/unblock/", MailingUnblockView.as_view(), name="mailing_unblock"),
 ]
 
 recipient_urls = [

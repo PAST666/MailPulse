@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Разблокировка рассылки{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Разблокировка рассылки</h2>
+    
+    <div class="alert alert-warning">
+        <p>Вы собираетесь разблокировать рассылку: <strong>{{ unblocked_mailing.message.title }}</strong></p>
+        <p>Владелец: {{ unblocked_mailing.owner.username }}</p>
+        <p>После разблокировки рассылка не сможет быть отправлена.</p>
+    </div>
+    
+    <form method="post" action="{% url 'mailings:mailing_unblock' unblocked_mailing.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Подтвердить разблокировку</button>
+        <a href="{% url 'mailings:mailing_list' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}
