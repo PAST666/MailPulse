@@ -14,7 +14,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 
 from mailings.forms import MailingForm
-from .models import Mailing, Message, Recipient, MailAttempt, MailingStatus
+from .models import Mailing, Message, Recipient, MailAttempt, MailingStatus, MailAttemptStatus
 from .utils import check_manager
 
 
@@ -262,22 +262,18 @@ class MailAttemptListView(LoginRequiredMixin, ListView):
         # Статистика для текущего пользователя
         user_attempts = MailAttempt.objects.filter(mailing__owner=user)
         context["user_successful_attempts"] = user_attempts.filter(
-            status="Успех"
-        ).count()
+            status=MailAttemptStatus.SUCCESS).count()
         context["user_failed_attempts"] = user_attempts.filter(
-            status="Неуспешно"
-        ).count()
+            status=MailAttemptStatus.FAILED).count()
         context["user_total_attempts"] = user_attempts.count()
 
         # Статистика для всех пользователей (видна только менеджерам)
         if is_manager:
             all_attempts = MailAttempt.objects.all()
             context["all_successful_attempts"] = all_attempts.filter(
-                status="Успешно"
-            ).count()
+                status=MailAttemptStatus.SUCCESS).count()
             context["all_failed_attempts"] = all_attempts.filter(
-                status="Не успешно"
-            ).count()
+                status=MailAttemptStatus.FAILED).count()
             context["all_total_attempts"] = all_attempts.count()
 
         return context

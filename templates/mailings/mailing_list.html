@@ -36,19 +36,23 @@
                         <td>{{ mailing.recipients.count }}</td>
                         <td>
                             {% if user == mailing.owner %}
-                                <form action="{% url 'mailings:mailing_detail' mailing.pk %}" method="post" style="display: inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-success">Отправить</button>
-                                </form>                            
-                                <a href="{% url 'mailings:mailing_update' mailing.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-                                <a href="{% url 'mailings:mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                                {% if mailing.is_blocked %}
+                                    <span class="btn btn-sm btn-secondary">Заблокировано</span>
+                                {% else %}
+                                    <form action="{% url 'mailings:mailing_detail' mailing.pk %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-success">Отправить</button>
+                                    </form>
+                                    <a href="{% url 'mailings:mailing_update' mailing.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
+                                    <a href="{% url 'mailings:mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger mt-2">Удалить</a>
+                                {% endif %}                            
                             {% endif %}
                             {% if manager_group_members and user != mailing.owner %}
                                 {% if mailing.is_blocked %}
                                     <span class="btn btn-sm btn-secondary">Заблокировано</span>
                                     <a href="{% url 'mailings:mailing_unblock' mailing.pk %}" class="btn btn-sm btn-success">Разблокировать</a>                            
                                 {% else %}
-                                    <a href="{% url 'mailings:mailing_block' mailing.pk %}" class="btn btn-sm btn-success">Блок рассылки</a> 
+                                    <a href="{% url 'mailings:mailing_block' mailing.pk %}" class="btn btn-sm btn-success">Заблокировать</a> 
                                 {% endif %}
                             {% endif %}    
                         </td>
