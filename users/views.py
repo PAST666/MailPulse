@@ -192,3 +192,32 @@ class BlockUserView(LoginRequiredMixin, View):
         user.save()
         return redirect(self.success_url)        
 
+
+class UnblockUserView(LoginRequiredMixin, View):
+    template_name = "users/unblock_user.html"
+    success_url = reverse_lazy("mailings:recipient_list")
+
+    def __user_is_manager(self, user):
+        if not check_manager(user):
+            raise PermissionDenied("У вас нет прав для разблокировки пользователей")
+    
+    def get(self, request, *args, **kwargs):
+        user_id = self.kwargs.get("user_id")
+        user = get_object_or_404(User, id=user_id)
+        self.__user_is_manager(request.user)
+
+        if user.is_blocked:
+            return render(request, self.template_name, context={"unblocked_user": user})
+        return redirect(self.success_url)
+
+    def post(self, request, *args, **kwargs):
+        user_id = self.kwargs.get("user_id")
+        user = get_object_or_404(User, id=user_id)
+
+        self.__user_is_manager(request.user)
+        if user == request.user:
+            raise PermissionDenied("Нельзя разблокировать себя")
+
+        user.is_blocked = False
+        user.save()
+        return redirect(self.success_url)

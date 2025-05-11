@@ -42,11 +42,9 @@
                                             {% if manager_group_members and user != recipient.owner %}
                                                 {% if recipient.owner.is_blocked %}
                                                     <span class="btn btn-sm btn-secondary">Заблокирован</span>
+                                                    <a href="{% url 'users:user_unblock' recipient.owner.pk %}" class="btn btn-sm btn-success">Разблокировать</a>                            
                                                 {% else %}
-                                                    <form action="{% url 'users:user_block' recipient.owner.pk %}" method="post" style="display: inline;">
-                                                        {% csrf_token %}
-                                                        <button type="submit" class="btn btn-sm btn-success">Блок автора</button>
-                                                    </form>  
+                                                    <a href="{% url 'users:user_block' recipient.owner.pk %}" class="btn btn-sm btn-success">Блок автора</a> 
                                                 {% endif %}
                                             {% endif %}
                                     </td>
