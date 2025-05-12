@@ -22,15 +22,7 @@
                 {% for mailing in mailings %}
                     <tr>
                         <td>{{ mailing.message.title }}</td>
-                        <td>
-                            {% if mailing.status == 'CREATED' %}
-                                <span class="status-created">Создана</span>
-                            {% elif mailing.status == 'STARTED' %}
-                                <span class="status-started">Запущена</span>
-                            {% elif mailing.status == 'COMPLETED' %}
-                                <span class="status-completed">Завершена</span>
-                            {% endif %}
-                        </td>
+                        <td><span>{{ mailing.get_status_display }}</span></td>
                         <td>{{ mailing.time_of_first_send|date:"d.m.Y H:i" }}</td>
                         <td>{{ mailing.time_of_last_send|date:"d.m.Y H:i" }}</td>
                         <td>{{ mailing.recipients.count }}</td>

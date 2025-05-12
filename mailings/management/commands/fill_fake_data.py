@@ -20,7 +20,9 @@ class Command(BaseCommand):
             username = fake_data.user_name()
             if User.objects.filter(username=username).exists():
                 self.stdout.write(
-                    self.style.WARNING(f"Пользователь уже существует, пропускаем")
+                    self.style.WARNING(
+                        f"Пользователь уже существует, пропускаем"
+                    )
                 )
                 continue
 
@@ -32,7 +34,9 @@ class Command(BaseCommand):
                 email=fake_data.email(),
             )
             created_users.append(user)
-            self.stdout.write(self.style.SUCCESS(f"Пользователь {user} успешно создан"))
+            self.stdout.write(
+                self.style.SUCCESS(f"Пользователь {user} успешно создан")
+            )
         return created_users
 
     def create_recipients(self, user, num_recipients=10):
@@ -46,7 +50,9 @@ class Command(BaseCommand):
                     owner=user,
                 )
                 self.stdout.write(
-                    self.style.SUCCESS(f"Получатель {recipient.email} успешно создан")
+                    self.style.SUCCESS(
+                        f"Получатель {recipient.email} успешно создан"
+                    )
                 )
             except IntegrityError:
                 self.stdout.write(
@@ -94,10 +100,13 @@ class Command(BaseCommand):
             )
             mailing.recipients.set(
                 random.sample(
-                    list(recipients), k=min(random.randint(3, 5), len(recipients))
+                    list(recipients),
+                    k=min(random.randint(3, 5), len(recipients)),
                 )
             )
-            self.stdout.write(self.style.SUCCESS(f"Рассылка {mailing} успешно создана"))
+            self.stdout.write(
+                self.style.SUCCESS(f"Рассылка {mailing} успешно создана")
+            )
 
     def handle(self, *args, **options):
         for user in self.create_users():

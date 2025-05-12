@@ -100,9 +100,9 @@
               <td class="text-center">{{ attempt.time_of_attempt }}</td>
               <td class="text-center">
                 {% if attempt.status.lower == "success" or attempt.status.lower == "успех" %}
-                  <span class="badge bg-success">{{ attempt.status }}</span>
+                  <span class="badge bg-success">{{ attempt.get_status_display }}</span>
                 {% else %}
-                  <span class="badge bg-danger">{{ attempt.status }}</span>
+                  <span class="badge bg-danger">{{ attempt.get_status_display }}</span>
                 {% endif %}
               </td>
               {% if manager_group_members %}

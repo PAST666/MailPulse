@@ -30,7 +30,9 @@ class Command(BaseCommand):
         group.permissions.set(permissions)
 
         if created:
-            self.stdout.write(self.style.SUCCESS(f'Group "{group.name}" created'))
+            self.stdout.write(
+                self.style.SUCCESS(f'Group "{group.name}" created')
+            )
         else:
             self.stdout.write(
                 self.style.SUCCESS(f'Group "{group.name}" already exists')

@@ -19,7 +19,7 @@ from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect
 
 from .forms import (
-    CustomLoginForm,
+    CustomLoginForm
     CustomUserCreationForm,
     UserUpdateForm,
     ProfileUpdateForm,
@@ -176,9 +176,9 @@ class BlockUserView(LoginRequiredMixin, View):
         user = get_object_or_404(User, id=user_id)
         self.__user_is_manager(request.user)
 
-        if user.is_blocked:
-            return redirect(self.success_url)
-        return render(request, self.template_name, context={"blocked_user": user})
+        if not user.is_blocked:
+            return render(request, self.template_name, context={"blocked_user": user})
+        return redirect(self.success_url)
 
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs.get("user_id")

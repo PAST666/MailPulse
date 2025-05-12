@@ -1,7 +1,8 @@
-from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db import models
 from django.urls import reverse
+
 from .managers import MailingManager, MessageManager, RecipientManager
 
 MAX_NAME_LENGTH = 150
@@ -23,7 +24,9 @@ class Message(models.Model):
     title = models.CharField("Заголовок", max_length=MAX_NAME_LENGTH)
     text = models.CharField("Текст сообщения", max_length=MAX_TEXT_LENGTH)
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="messages"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="messages",
     )
     permissions = [
         ("can_view_all_messages", "Может просматривать все сообщения"),
@@ -58,7 +61,9 @@ class Mailing(models.Model):
         "Recipient", related_name="mailings", verbose_name="Получатели"
     )
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="mailings"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="mailings",
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
     objects = MailingManager()
@@ -115,7 +120,9 @@ class Mailing(models.Model):
                 print(e)
 
             # Создаем запись о попытке отправки
-            MailAttempt.objects.create(status=status, response=response, mailing=self)
+            MailAttempt.objects.create(
+                status=status, response=response, mailing=self
+            )
 
         # Обновляем статус рассылки на "Завершена"
         self.status = MailingStatus.COMPLETED
@@ -140,11 +147,15 @@ class Mailing(models.Model):
 class Recipient(models.Model):
     email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
     name = models.CharField("Имя", max_length=MAX_NAME_LENGTH)
-    middle_name = models.CharField("Отчество", max_length=MAX_NAME_LENGTH, blank=True)
+    middle_name = models.CharField(
+        "Отчество", max_length=MAX_NAME_LENGTH, blank=True
+    )
     surname = models.CharField("Фамилия", max_length=MAX_NAME_LENGTH)
     comment = models.TextField("Комментарий")
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="recipients"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="recipients",
     )
     objects = RecipientManager()
 
@@ -167,7 +178,9 @@ class Recipient(models.Model):
 
 
 class MailAttempt(models.Model):
-    time_of_attempt = models.DateTimeField("Дата и время попытки", auto_now_add=True)
+    time_of_attempt = models.DateTimeField(
+        "Дата и время попытки", auto_now_add=True
+    )
     status = models.CharField(
         "Статус", choices=MailAttemptStatus.choices, max_length=MAX_NAME_LENGTH
     )

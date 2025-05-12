@@ -14,7 +14,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 
 from mailings.forms import MailingForm
-from .models import Mailing, Message, Recipient, MailAttempt, MailingStatus, MailAttemptStatus
+from .models import (
+    Mailing,
+    Message,
+    Recipient,
+    MailAttempt,
+    MailingStatus,
+    MailAttemptStatus,
+)
 from .utils import check_manager
 
 
@@ -96,7 +103,9 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields["message"].queryset = Message.objects.for_user(self.request.user)
+        form.fields["message"].queryset = Message.objects.for_user(
+            self.request.user
+        )
         form.fields["recipients"].queryset = Recipient.objects.for_user(
             self.request.user
         )
@@ -119,7 +128,9 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields["message"].queryset = Message.objects.for_user(self.request.user)
+        form.fields["message"].queryset = Message.objects.for_user(
+            self.request.user
+        )
         form.fields["recipients"].queryset = Recipient.objects.for_user(
             self.request.user
         )
@@ -163,7 +174,9 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse("mailings:mailing_detail", kwargs={"pk": self.object.pk})
+        return reverse(
+            "mailings:mailing_detail", kwargs={"pk": self.object.pk}
+        )
 
 
 class RecipientListView(LoginRequiredMixin, ListView):
@@ -262,18 +275,22 @@ class MailAttemptListView(LoginRequiredMixin, ListView):
         # Статистика для текущего пользователя
         user_attempts = MailAttempt.objects.filter(mailing__owner=user)
         context["user_successful_attempts"] = user_attempts.filter(
-            status=MailAttemptStatus.SUCCESS).count()
+            status=MailAttemptStatus.SUCCESS
+        ).count()
         context["user_failed_attempts"] = user_attempts.filter(
-            status=MailAttemptStatus.FAILED).count()
+            status=MailAttemptStatus.FAILED
+        ).count()
         context["user_total_attempts"] = user_attempts.count()
 
         # Статистика для всех пользователей (видна только менеджерам)
         if is_manager:
             all_attempts = MailAttempt.objects.all()
             context["all_successful_attempts"] = all_attempts.filter(
-                status=MailAttemptStatus.SUCCESS).count()
+                status=MailAttemptStatus.SUCCESS
+            ).count()
             context["all_failed_attempts"] = all_attempts.filter(
-                status=MailAttemptStatus.FAILED).count()
+                status=MailAttemptStatus.FAILED
+            ).count()
             context["all_total_attempts"] = all_attempts.count()
 
         return context
@@ -287,48 +304,51 @@ class MailingBlockView(LoginRequiredMixin, View):
         if not check_manager(user):
             raise PermissionDenied("У вас нет прав для блокировки рассылок")
 
+    def __is_not_owner(self, user, mailing):
+        if user == mailing.owner:
+            raise PermissionDenied("Вы не можете заблокировать свою рассылку.")
+
     def get(self, request, *args, **kwargs):
         mailing_id = kwargs.get("pk")
-        try:
-            mailing = Mailing.objects.get(pk=mailing_id)
-        except Mailing.DoesNotExist:
-            messages.error(request, f"Рассылка с ID {mailing_id} не существует.")
-            return redirect(self.success_url)
-        
-        try:
-            self.__user_is_manager(request.user)
-        except PermissionDenied:
-            messages.error(request, "У вас нет прав для блокировки рассылок.")
-            return redirect(self.success_url)      
+        mailing = get_object_or_404(Mailing, id=mailing_id)
+        self.__user_is_manager(request.user)
+        self.__is_not_owner(request.user, mailing)
 
         if mailing.is_blocked:
-            messages.info(request, f"Рассылка с ID {mailing_id} уже заблокирована.")
-            return redirect(self.success_url)          
-             
-        return render(request, self.template_name, context={"blocked_mailing": mailing})
-    
+            messages.info(
+                request, f"Рассылка с ID {mailing_id} уже заблокирована."
+            )
+            return redirect(self.success_url)
+
+        return render(
+            request, self.template_name, context={"blocked_mailing": mailing}
+        )
+
     def post(self, request, *args, **kwargs):
         mailing_id = kwargs.get("pk")
-        
+
         # Проверяем существование рассылки
         try:
             mailing = Mailing.objects.get(pk=mailing_id)
         except Mailing.DoesNotExist:
-            messages.error(request, f"Рассылка с ID {mailing_id} не существует.")
+            messages.error(
+                request, f"Рассылка с ID {mailing_id} не существует."
+            )
             return redirect(self.success_url)
-        
+
         # Проверяем права пользователя
         try:
             self.__user_is_manager(request.user)
         except PermissionDenied:
             messages.error(request, "У вас нет прав для блокировки рассылок.")
             return redirect(self.success_url)
-        
+
         # Блокируем рассылку
         mailing.is_blocked = True
-        mailing.save()    
+        mailing.save()
         return redirect(self.success_url)
-    
+
+
 class MailingUnblockView(LoginRequiredMixin, View):
     template_name = "mailings/mailing_unblock.html"
     success_url = reverse_lazy("mailings:mailing_list")
@@ -342,38 +362,48 @@ class MailingUnblockView(LoginRequiredMixin, View):
         try:
             mailing = Mailing.objects.get(pk=mailing_id)
         except Mailing.DoesNotExist:
-            messages.error(request, f"Рассылка с ID {mailing_id} не существует.")
+            messages.error(
+                request, f"Рассылка с ID {mailing_id} не существует."
+            )
             return redirect(self.success_url)
-        
+
         try:
             self.__user_is_manager(request.user)
         except PermissionDenied:
             messages.error(request, "У вас нет прав для блокировки рассылок.")
-            return redirect(self.success_url)      
+            return redirect(self.success_url)
 
         if mailing.is_blocked:
-            return render(request, self.template_name, context={"unblocked_mailing": mailing})         
-             
-        return render(request, self.template_name, context={"unblocked_mailing": mailing})
-    
+            return render(
+                request,
+                self.template_name,
+                context={"unblocked_mailing": mailing},
+            )
+
+        return render(
+            request, self.template_name, context={"unblocked_mailing": mailing}
+        )
+
     def post(self, request, *args, **kwargs):
         mailing_id = kwargs.get("pk")
-        
+
         # Проверяем существование рассылки
         try:
             mailing = Mailing.objects.get(pk=mailing_id)
         except Mailing.DoesNotExist:
-            messages.error(request, f"Рассылка с ID {mailing_id} не существует.")
+            messages.error(
+                request, f"Рассылка с ID {mailing_id} не существует."
+            )
             return redirect(self.success_url)
-        
+
         # Проверяем права пользователя
         try:
             self.__user_is_manager(request.user)
         except PermissionDenied:
             messages.error(request, "У вас нет прав для блокировки рассылок.")
             return redirect(self.success_url)
-        
+
         # Разблокируем рассылку
         mailing.is_blocked = False
-        mailing.save()    
+        mailing.save()
         return redirect(self.success_url)

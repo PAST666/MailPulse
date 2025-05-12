@@ -1,19 +1,12 @@
 from django.contrib import admin
-from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import (
-    CustomLoginView,
-    CustomLogoutView,
-    CustomRegisterView,
-    VerifyEmailView,
-    ProfileUpdateView,
-    ProfileDetailView,
-    EmailVerificationSendView,
-    PasswordResetView,
-    CustomPasswordResetConfirmView,
-    BlockUserView,
-    UnblockUserView
-)
+from django.urls import path
+
+from .views import (BlockUserView, CustomLoginView, CustomLogoutView,
+                    CustomPasswordResetConfirmView, CustomRegisterView,
+                    EmailVerificationSendView, PasswordResetView,
+                    ProfileDetailView, ProfileUpdateView, UnblockUserView,
+                    VerifyEmailView)
 
 app_name = "users"
 
