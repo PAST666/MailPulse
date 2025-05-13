@@ -19,7 +19,7 @@ from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect
 
 from .forms import (
-    CustomLoginForm
+    CustomLoginForm,
     CustomUserCreationForm,
     UserUpdateForm,
     ProfileUpdateForm,
