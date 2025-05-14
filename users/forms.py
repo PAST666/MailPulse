@@ -25,7 +25,13 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "phone_number", "password1", "password2")
+        fields = (
+            "username",
+            "email",
+            "phone_number",
+            "password1",
+            "password2",
+        )
 
     def clean_email(self):
         email = self.cleaned_data["email"]
@@ -64,9 +70,6 @@ class UserUpdateForm(forms.ModelForm):
         fields = ("username", "email", "first_name", "last_name")
 
     def __init__(self, *args, **kwargs):
-        """
-        Обновление стилей формы под bootstrap
-        """
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update(
@@ -82,7 +85,9 @@ class UserUpdateForm(forms.ModelForm):
         username = self.cleaned_data.get("username")
         if (
             email
-            and User.objects.filter(email=email).exclude(username=username).exists()
+            and User.objects.filter(email=email)
+            .exclude(username=username)
+            .exists()
         ):
             raise forms.ValidationError("Email адрес должен быть уникальным")
         return email

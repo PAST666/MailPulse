@@ -10,55 +10,55 @@ MAX_TEXT_LENGTH = 255
 
 
 class MailAttemptStatus(models.TextChoices):
-    SUCCESS = ("SUCCESS", "Успех")
-    FAILED = ("FAILED", "Неуспешно")
+    SUCCESS = ('SUCCESS', 'Успех')
+    FAILED = ('FAILED', 'Неуспешно')
 
 
 class MailingStatus(models.TextChoices):
-    CREATED = ("CREATED", "Создана")
-    STARTED = ("STARTED", "Запущена")
-    COMPLETED = ("COMPLETED", "Завершена")
+    CREATED = ('CREATED', 'Создана')
+    STARTED = ('STARTED', 'Запущена')
+    COMPLETED = ('COMPLETED', 'Завершена')
 
 
 class Message(models.Model):
-    title = models.CharField("Заголовок", max_length=MAX_NAME_LENGTH)
-    text = models.CharField("Текст сообщения", max_length=MAX_TEXT_LENGTH)
+    title = models.CharField('Заголовок', max_length=MAX_NAME_LENGTH)
+    text = models.CharField('Текст сообщения', max_length=MAX_TEXT_LENGTH)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="messages",
+        related_name='messages',
     )
     permissions = [
-        ("can_view_all_messages", "Может просматривать все сообщения"),
+        ('can_view_all_messages', 'Может просматривать все сообщения'),
     ]
     objects = MessageManager()
 
     class Meta:
-        verbose_name = "Сообщение"
-        verbose_name_plural = "Сообщения"
-        ordering = ("title",)
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
+        ordering = ('title',)
 
     def get_absolute_url_update(self):
-        return reverse("mailings:message_update", kwargs={"pk": self.pk})
+        return reverse('mailings:message_update', kwargs={'pk': self.pk})
 
     def get_absolute_url_delete(self):
-        return reverse("mailings:message_delete", kwargs={"pk": self.pk})
+        return reverse('mailings:message_delete', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title
 
 
 class Mailing(models.Model):
-    time_of_first_send = models.DateTimeField("Дата и время первой отправки")
-    time_of_last_send = models.DateTimeField("Дата и время последней отправки")
+    time_of_first_send = models.DateTimeField('Дата и время первой отправки')
+    time_of_last_send = models.DateTimeField('Дата и время последней отправки')
     status = models.CharField(
-        "Статус", choices=MailingStatus.choices, max_length=MAX_NAME_LENGTH
+        'Статус', choices=MailingStatus.choices, max_length=MAX_NAME_LENGTH
     )
     message = models.ForeignKey(
-        "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
+        'Message', on_delete=models.CASCADE, verbose_name='Сообщение'
     )
     recipients = models.ManyToManyField(
-        "Recipient", related_name="mailings", verbose_name="Получатели"
+        'Recipient', related_name='mailings', verbose_name='Получатели'
     )
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

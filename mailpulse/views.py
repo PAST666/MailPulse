@@ -1,7 +1,6 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView
-from mailings.utils import check_manager
-from mailings.models import Mailing, Recipient, MailingStatus
+
+from mailings.models import Mailing, MailingStatus, Recipient
 
 
 class MainView(TemplateView):
@@ -19,7 +18,9 @@ class MainView(TemplateView):
                 .count()
             )
             context["unique_recipients"] = (
-                Recipient.objects.for_user(self.request.user).distinct().count()
+                Recipient.objects.for_user(self.request.user)
+                .distinct()
+                .count()
             )
             context["user_slug"] = self.request.user.username
         return context

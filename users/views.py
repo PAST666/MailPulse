@@ -1,31 +1,29 @@
-from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
-from django.contrib.auth.views import (
-    PasswordResetConfirmView as BasePasswordResetConfirmView,
-)
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.mail import send_mail
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, render, redirect
-from django.template.loader import render_to_string
-from django.views.generic import CreateView, TemplateView
-from django.views import View
-from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView
-from django.views.generic import DetailView, UpdateView
-from django.db import transaction
-from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse, HttpResponsePermanentRedirect
-
-from .forms import (
-    CustomLoginForm,
-    CustomUserCreationForm,
-    UserUpdateForm,
-    ProfileUpdateForm,
+from django.contrib.auth.views import (
+    PasswordResetConfirmView as BasePasswordResetConfirmView
 )
-from .models import User, ActivationToken, Profile
+from django.contrib.auth.views import (
+    PasswordResetView as BasePasswordResetView
+)
+from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
+from django.db import transaction
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import (CreateView, DetailView, TemplateView,
+                                  UpdateView)
+from django.views.generic.edit import UpdateView
+
 from mailings.utils import check_manager
+
+from .forms import (CustomLoginForm, CustomUserCreationForm, ProfileUpdateForm,
+                    UserUpdateForm)
+from .models import ActivationToken, Profile, User
 
 # TODO pep8
 
@@ -61,7 +59,8 @@ class CustomRegisterView(CreateView):
 
         verification_url = self.request.build_absolute_uri(
             reverse_lazy(
-                "users:email_verified", kwargs={"token": str(activation_token.token)}
+                "users:email_verified",
+                kwargs={"token": str(activation_token.token)},
             ),
         )
         html_message = render_to_string(
@@ -96,7 +95,9 @@ class VerifyEmailView(TemplateView):
             user_token = self.kwargs.get("user_token")
             token = ActivationToken.objects.get(token=user_token)
         except ActivationToken.DoesNotExist:
-            return self.render_to_response({"error": "Недействительная ссылка"})
+            return self.render_to_response(
+                {"error": "Недействительная ссылка"}
+            )
 
         user = token.user
         user.is_active = True
@@ -114,7 +115,9 @@ class ProfileDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = f"Страница пользователя: {self.object.user.username}"
+        context["title"] = (
+            f"Страница пользователя: {self.object.user.username}"
+        )
         return context
 
 
@@ -149,7 +152,9 @@ class ProfileUpdateView(UpdateView):
         return super(ProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("users:profile_detail", kwargs={"slug": self.object.slug})
+        return reverse_lazy(
+            "users:profile_detail", kwargs={"slug": self.object.slug}
+        )
 
 
 class PasswordResetView(BasePasswordResetView):
@@ -163,13 +168,16 @@ class CustomPasswordResetConfirmView(BasePasswordResetConfirmView):
     template_name = "users/password_reset_confirm.html"
     success_url = reverse_lazy("users:password_reset_complete")
 
+
 class BlockUserView(LoginRequiredMixin, View):
     template_name = "users/block_user.html"
     success_url = reverse_lazy("mailings:recipient_list")
 
     def __user_is_manager(self, user):
         if not check_manager(user):
-            raise PermissionDenied("У вас нет прав для блокировки пользователей")
+            raise PermissionDenied(
+                "У вас нет прав для блокировки пользователей"
+            )
 
     def get(self, request, *args, **kwargs):
         user_id = self.kwargs.get("user_id")
@@ -177,7 +185,9 @@ class BlockUserView(LoginRequiredMixin, View):
         self.__user_is_manager(request.user)
 
         if not user.is_blocked:
-            return render(request, self.template_name, context={"blocked_user": user})
+            return render(
+                request, self.template_name, context={"blocked_user": user}
+            )
         return redirect(self.success_url)
 
     def post(self, request, *args, **kwargs):
@@ -190,7 +200,7 @@ class BlockUserView(LoginRequiredMixin, View):
 
         user.is_blocked = True
         user.save()
-        return redirect(self.success_url)        
+        return redirect(self.success_url)
 
 
 class UnblockUserView(LoginRequiredMixin, View):
@@ -199,15 +209,19 @@ class UnblockUserView(LoginRequiredMixin, View):
 
     def __user_is_manager(self, user):
         if not check_manager(user):
-            raise PermissionDenied("У вас нет прав для разблокировки пользователей")
-    
+            raise PermissionDenied(
+                "У вас нет прав для разблокировки пользователей"
+            )
+
     def get(self, request, *args, **kwargs):
         user_id = self.kwargs.get("user_id")
         user = get_object_or_404(User, id=user_id)
         self.__user_is_manager(request.user)
 
         if user.is_blocked:
-            return render(request, self.template_name, context={"unblocked_user": user})
+            return render(
+                request, self.template_name, context={"unblocked_user": user}
+            )
         return redirect(self.success_url)
 
     def post(self, request, *args, **kwargs):

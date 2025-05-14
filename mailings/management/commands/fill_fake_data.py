@@ -1,11 +1,12 @@
 import random
+
 from django.core.management.base import BaseCommand
-from mailings.models import Mailing, Message, Recipient, MailingStatus
-from users.models import User
-from django.utils import timezone
-from datetime import timedelta
 from django.db.utils import IntegrityError
+from django.utils import timezone
 from faker import Faker
+
+from mailings.models import Mailing, MailingStatus, Message, Recipient
+from users.models import User
 
 fake_data = Faker()
 

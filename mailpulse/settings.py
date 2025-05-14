@@ -1,5 +1,4 @@
 import os
-
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -8,7 +7,9 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-^d0o9z+hb5y^50d0)pb@4dc3_gi!8ik%-!&4&wyu4v83%u9lcq'
+SECRET_KEY = (
+    "django-insecure-^d0o9z+hb5y^50d0)pb@4dc3_gi!8ik%-!&4&wyu4v83%u9lcq"
+)
 
 DEBUG = True
 
@@ -23,8 +24,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "mailings",
     "users",
-    'crispy_forms',
-    'django_bootstrap5',
+    "crispy_forms",
+    "django_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -104,16 +105,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-MEDIA_URL = '/media/'
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+MEDIA_URL = "/media/"
 LOGIN_URL = "/users/login/"

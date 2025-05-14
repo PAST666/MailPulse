@@ -1,12 +1,19 @@
-from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from .views import (BlockUserView, CustomLoginView, CustomLogoutView,
-                    CustomPasswordResetConfirmView, CustomRegisterView,
-                    EmailVerificationSendView, PasswordResetView,
-                    ProfileDetailView, ProfileUpdateView, UnblockUserView,
-                    VerifyEmailView)
+from .views import (
+    BlockUserView,
+    CustomLoginView,
+    CustomLogoutView,
+    CustomPasswordResetConfirmView,
+    CustomRegisterView,
+    EmailVerificationSendView,
+    PasswordResetView,
+    ProfileDetailView,
+    ProfileUpdateView,
+    UnblockUserView,
+    VerifyEmailView,
+)
 
 app_name = "users"
 
@@ -15,7 +22,9 @@ urlpatterns = [
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("register/", CustomRegisterView.as_view(), name="register"),
     path(
-        "verify_email/<uuid:user_token>/", VerifyEmailView.as_view(), name="email_verified"
+        "verify_email/<uuid:user_token>/",
+        VerifyEmailView.as_view(),
+        name="email_verified",
     ),
     path(
         "email-verification-sent/",
@@ -24,7 +33,9 @@ urlpatterns = [
     ),
     path("profile/edit/", ProfileUpdateView.as_view(), name="profile_edit"),
     path(
-        "profile_detail/<str:slug>/", ProfileDetailView.as_view(), name="profile_detail"
+        "profile_detail/<str:slug>/",
+        ProfileDetailView.as_view(),
+        name="profile_detail",
     ),
     path(
         "password_reset/",
@@ -40,7 +51,7 @@ urlpatterns = [
     ),
     path(
         "reset/<uidb64>/<token>/",
-            CustomPasswordResetConfirmView.as_view(),
+        CustomPasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
     path(
@@ -51,5 +62,9 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path("<int:user_id>/block/", BlockUserView.as_view(), name="user_block"),
-    path("<int:user_id>/unblock/", UnblockUserView.as_view(), name='user_unblock'),
+    path(
+        "<int:user_id>/unblock/",
+        UnblockUserView.as_view(),
+        name="user_unblock",
+    ),
 ]

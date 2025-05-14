@@ -1,27 +1,16 @@
-from django.views.generic import (
-    View,
-    ListView,
-    UpdateView,
-    DeleteView,
-    CreateView,
-    DetailView,
-)
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.contrib import messages
-from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView, View)
 
 from mailings.forms import MailingForm
-from .models import (
-    Mailing,
-    Message,
-    Recipient,
-    MailAttempt,
-    MailingStatus,
-    MailAttemptStatus,
-)
+
+from .models import (MailAttempt, MailAttemptStatus, Mailing, MailingStatus,
+                     Message, Recipient)
 from .utils import check_manager
 
 
