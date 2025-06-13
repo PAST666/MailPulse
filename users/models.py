@@ -1,5 +1,6 @@
 import uuid
 
+from datetime import timedelta
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
 from django.db import models
@@ -46,13 +47,8 @@ class User(AbstractUser):
 
     @property
     def full_name(self):
-        if self.first_name == "" and self.last_name == "":
-            return ""
-        if self.first_name == "":
-            return self.last_name
-        if self.last_name == "":
-            return self.first_name        
-        return f"{self.first_name} {self.last_name}"
+        data = [self.first_name, self.last_name]
+        return " ".join([x for x in data if x])
 
     def __str__(self):
         return self.username
@@ -79,12 +75,13 @@ class ActivationToken(models.Model):
         "Истекает",
     )
 
+    def token_is_valid(self):
+        return self.expires_at > timezone.now()
+
     def save(self, *args, **kwargs):
         if not self.expires_at:
-            verification_token_expires_minutes = TOKEN_EXPIRES_MINUTES
-
             self.expires_at = timezone.now() + timezone.timedelta(
-                minutes=verification_token_expires_minutes,
+                minutes=TOKEN_EXPIRES_MINUTES,
             )
 
         return super().save(*args, **kwargs)
@@ -108,7 +105,7 @@ class Profile(models.Model):
         ],
     )
     bio = models.TextField(
-        "Информация о себе", max_length=(MAX_NAME_LENGTH * 2), blank=True
+        "Информация о себе", blank=True
     )
     birth_date = models.DateField(
         "Дата рождения",

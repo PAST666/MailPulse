@@ -60,7 +60,7 @@ class CustomRegisterView(CreateView):
         verification_url = self.request.build_absolute_uri(
             reverse_lazy(
                 "users:email_verified",
-                kwargs={"token": str(activation_token.token)},
+                kwargs={"user_token": str(activation_token.token)},
             ),
         )
         html_message = render_to_string(
@@ -98,6 +98,7 @@ class VerifyEmailView(TemplateView):
             return self.render_to_response(
                 {"error": "Недействительная ссылка"}
             )
+        # TODO сделать проверку что срок действия ссылки не истек
 
         user = token.user
         user.is_active = True
