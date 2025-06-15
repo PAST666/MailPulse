@@ -1,4 +1,4 @@
-import pytest
+import pytest, uuid
 from users.models import User, ActivationToken
 from datetime import timedelta
 from django.utils import timezone
@@ -47,7 +47,7 @@ def test_verify_email_valid(client):
     user = User.objects.create_user(
     username="Alex678",
     email="htmlmail@mail.ru",
-    password="4321REw!"        
+    password="4321REw!",        
     )
     user_token = ActivationToken.objects.create(user=user)
 
@@ -62,19 +62,15 @@ def test_verify_email_valid(client):
 
 @pytest.mark.django_db
 def test_verify_email_invalid(client):
-    user = User.objects.create_user(
-    username="Alex678888",
-    email="htmlmail2@mail.ru",
-    password="4321REw&"        
-    )
-    user_token = ActivationToken.objects.create(user=user)
 
     response = client.get(
         reverse(
-            "users:email_verified_",
-            kwargs={"user_token": str(user_token.token)},
-        ),        
+            "users:email_verified",
+            kwargs={"user_token": str(uuid.uuid4())},
+        )      
     )
+    assert response.status_code == HTTPStatus.OK
+    assert "error" in response.context
 # TODO написать тест некорректной верификации
 
 @pytest.mark.django_db

@@ -17,10 +17,11 @@ def manager():
 @pytest.fixture
 def simple_user():
     user = User.objects.create_user(
-        username="simple_user", 
+        username="simple_user",
         email="simple_user@test.com",
         first_name="simple_user", 
         last_name="simple_user",
         is_active=True
     ) 
-    return user    
+    return user
+

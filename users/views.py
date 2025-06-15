@@ -98,7 +98,10 @@ class VerifyEmailView(TemplateView):
             return self.render_to_response(
                 {"error": "Недействительная ссылка"}
             )
-        # TODO сделать проверку что срок действия ссылки не истек
+        if not token.token_is_valid():
+            return self.render_to_response(
+                {"error": "Ссылка истекла"}
+            )
 
         user = token.user
         user.is_active = True
