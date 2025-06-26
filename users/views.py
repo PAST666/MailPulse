@@ -93,7 +93,9 @@ class VerifyEmailView(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
             user_token = self.kwargs.get("user_token")
-            token = ActivationToken.objects.get(token=user_token)
+            token = ActivationToken.objects.get(
+                token=user_token
+            )
         except ActivationToken.DoesNotExist:
             return self.render_to_response(
                 {"error": "Недействительная ссылка"}
@@ -193,6 +195,7 @@ class BlockUserView(LoginRequiredMixin, View):
                 request, self.template_name, context={"blocked_user": user}
             )
         return redirect(self.success_url)
+    
 
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs.get("user_id")

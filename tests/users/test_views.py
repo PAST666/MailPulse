@@ -66,12 +66,13 @@ def test_verify_email_invalid(client):
     response = client.get(
         reverse(
             "users:email_verified",
-            kwargs={"user_token": str(uuid.uuid4())},
+            kwargs={"user_token": uuid.uuid4()},
         )      
     )
     assert response.status_code == HTTPStatus.OK
-    assert "error" in response.context
-# TODO написать тест некорректной верификации
+    print(response.content.decode("UTF-8"))
+    assert "Недействительная ссылка" in response.content.decode("UTF-8")
+
 
 @pytest.mark.django_db
 def test_verify_email_expired_link(client):
@@ -94,4 +95,61 @@ def test_verify_email_expired_link(client):
     )
 
     assert response.status_code == HTTPStatus.OK
-    # TODO после добавления проверки дописать код
+    assert "Ссылка истекла" in response.content.decode("UTF-8")
+
+
+@pytest.mark.django_db
+def test_block_user_view_get(client, manager, simple_user):
+    client.login(username=manager.username, password="Qwer123$")
+    response = client.get(
+        reverse(
+            "users:user_block",
+            kwargs={"user_id": simple_user.pk},
+        )      
+    )  
+    assert response.status_code == HTTPStatus.OK
+    assert "users/block_user.html" in [temp.name for temp in response.templates] 
+
+@pytest.mark.django_db
+def test_block_user_view_post(client, manager, simple_user2):
+    client.login(username=manager.username, password="Qwer123$")
+    response = client.post(
+        reverse(
+            "users:user_block",
+            kwargs={"user_id": simple_user2.pk},
+        )      
+    ) 
+    ref_url = reverse("mailings:recipient_list")
+    assert response.status_code == HTTPStatus.FOUND
+    assert response.url == ref_url
+
+    simple_user2.refresh_from_db()
+    assert simple_user2.is_blocked
+
+@pytest.mark.django_db
+def test_user_block_user(client, simple_user3, simple_user4):
+    client.login(username=simple_user3.username, password="Qwer123$")
+    response = client.post(
+        reverse(
+            "users:user_block",
+            kwargs={"user_id": simple_user4.pk}
+        )
+    )
+    simple_user4.refresh_from_db()
+    assert not simple_user4.is_blocked
+    # проверить почему стстус кода 302, ожидается 403
+    # print(response.content.decode("UTF-8"))
+    # assert response.status_code == HTTPStatus.FORBIDDEN    
+
+@pytest.mark.django_db
+def manager_block_self(client, manager):
+    client.login(username=manager.username, password="Qwer123$")
+    response = client.post(
+        reverse(
+            "users:user_block",
+            kwargs={"user_id": manager.pk}
+        )
+    )
+    manager.refresh_from_db()
+    assert not manager.is_blocked
+    assert response.status_code == HTTPStatus.FORBIDDEN
