@@ -192,4 +192,4 @@ class MailAttempt(models.Model):
         verbose_name_plural = "Попытки рассылки"
 
     def __str__(self):
-        return self.name
+        return f"Попытка отправки {self.mailing.message.title} - {self.status}"

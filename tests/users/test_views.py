@@ -139,7 +139,7 @@ def test_user_block_user(client, simple_user3, simple_user4):
     assert not simple_user4.is_blocked
     # проверить почему стстус кода 302, ожидается 403
     # print(response.content.decode("UTF-8"))
-    # assert response.status_code == HTTPStatus.FORBIDDEN    
+    assert response.status_code == HTTPStatus.FORBIDDEN    
 
 @pytest.mark.django_db
 def manager_block_self(client, manager):

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import (
@@ -11,9 +12,11 @@ from django.contrib.auth.views import (
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.db import transaction
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import (CreateView, DetailView, TemplateView,
                                   UpdateView)
@@ -175,7 +178,8 @@ class CustomPasswordResetConfirmView(BasePasswordResetConfirmView):
     success_url = reverse_lazy("users:password_reset_complete")
 
 
-class BlockUserView(LoginRequiredMixin, View):
+@method_decorator(login_required, name='dispatch')
+class BlockUserView(View):
     template_name = "users/block_user.html"
     success_url = reverse_lazy("mailings:recipient_list")
 
