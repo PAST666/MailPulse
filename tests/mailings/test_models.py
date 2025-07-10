@@ -1,5 +1,5 @@
 import pytest
-from mailings.models import Message, Mailing, Recipient, MailAttempt, MailingStatus
+from mailings.models import Message, Mailing, Recipient, MailAttempt, MailingStatus, MailAttemptStatus
 from datetime import timedelta
 from django.utils import timezone
 
@@ -61,6 +61,16 @@ class TestMailingModel:
         assert self.mailing.owner == self._owner
         assert self.recipient in self.mailing.recipients.all()
         assert self.mailing.message == self.message
+    
+    def test_send_mailing_success(self):
+        self.mailing.send_mailing()
+        self.mailing.refresh_from_db()
+
+        assert self.mailing.status == MailingStatus.COMPLETED
+
+        attempt = MailAttempt.objects.get(mailing=self.mailing)
+        assert attempt.status == MailAttemptStatus.SUCCESS
+
     
 
 
