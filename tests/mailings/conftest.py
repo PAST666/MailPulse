@@ -23,7 +23,6 @@ def simple_user5():
         first_name="simple_user5", 
         last_name="simple_user5",
         is_active=True,
-        pk=1
     ) 
     return user
 
