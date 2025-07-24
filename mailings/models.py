@@ -80,6 +80,23 @@ class Mailing(models.Model):
         ]
 
     def send_mailing(self):
+        if self.owner.is_blocked:
+            # Создаем запись о неудачной попытке
+            MailAttempt.objects.create(
+                status=MailAttemptStatus.FAILED,
+                response="Рассылку нельзя отправить, так как автор заблокирован",
+                mailing=self
+            )
+            raise PermissionError("Рассылку нельзя отправить, так как автор заблокирован")
+        
+        if self.is_blocked:
+            # Создаем запись о неудачной попытке
+            MailAttempt.objects.create(
+                status=MailAttemptStatus.FAILED,
+                response="Рассылку нельзя отправить, так как она заблокирована",
+                mailing=self
+            )
+            raise PermissionError("Рассылку нельзя отправить, так как она заблокирована")
         """
         Метод для отправки писем всем получателям рассылки.
         Создает запись о попытке отправки и меняет статус рассылки.

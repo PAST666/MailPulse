@@ -155,9 +155,7 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()  # Получаем и устанавливаем объект
-        mailing = self.object
-        # mailing = self.get_object()
+        mailing = self.get_object()
         if mailing.status == MailingStatus.CREATED:
             mailing.send_mailing()
         return HttpResponseRedirect(self.get_success_url())

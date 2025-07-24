@@ -3,7 +3,6 @@ from mailings.models import Message, Mailing, Recipient, MailAttempt, MailingSta
 from datetime import timedelta
 from django.utils import timezone
 
-
 @pytest.mark.django_db
 class TestMessageModel:
 
@@ -70,8 +69,27 @@ class TestMailingModel:
 
         attempt = MailAttempt.objects.get(mailing=self.mailing)
         assert attempt.status == MailAttemptStatus.SUCCESS
-
     
+    def test_send_mailing_failed_owner_isblocked(self):
+        self.mailing.owner.is_blocked = True
+        self.mailing.owner.save()
+        with pytest.raises(PermissionError):
+            self.mailing.send_mailing()
+        self.mailing.refresh_from_db()
+        assert self.mailing.status == MailingStatus.CREATED
+        attempt = MailAttempt.objects.get(mailing=self.mailing)
+        assert attempt.status == MailAttemptStatus.FAILED
+
+    def test_send_mailing_failed_mailing_isblocked(self):
+        self.mailing.is_blocked = True
+        self.mailing.save()
+        with pytest.raises(PermissionError):
+            self.mailing.send_mailing()
+        self.mailing.refresh_from_db()
+        attempt = MailAttempt.objects.get(mailing=self.mailing)
+        assert attempt.status == MailAttemptStatus.FAILED
+
+        
 
 
 @pytest.mark.django_db

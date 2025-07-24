@@ -28,8 +28,6 @@ from .forms import (CustomLoginForm, CustomUserCreationForm, ProfileUpdateForm,
                     UserUpdateForm)
 from .models import ActivationToken, Profile, User
 
-# TODO pep8
-
 
 class CustomLoginView(LoginView):
     form_class = CustomLoginForm
