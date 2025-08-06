@@ -2,18 +2,15 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from django.core.management.utils import get_random_secret_key
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    "django-insecure-^d0o9z+hb5y^50d0)pb@4dc3_gi!8ik%-!&4&wyu4v83%u9lcq"
-)
-
-DEBUG = True
-
-ALLOWED_HOSTS = []
+SECRET_KEY = os.getenv("SECRET_KEY") or get_random_secret_key()
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -44,7 +41,6 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            BASE_DIR / "templates",
             os.path.join(BASE_DIR, "templates"),
             os.path.join(BASE_DIR, "templates", "users"),
             os.path.join(BASE_DIR, "templates", "mailings"),
@@ -85,23 +81,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "ru-ru"
+LANGUAGE_CODE = "ru"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Irkutsk"
 
 USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATIC_URL = "/static/"
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / "static",
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# LOGIN_REDIRECT_URL = "main"
-# LOGOUT_REDIRECT_URL = "main"
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
 
 AUTH_USER_MODEL = "users.User"
 
@@ -115,6 +114,6 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
-MEDIA_URL = "/media/"
+
 LOGIN_URL = "/users/login/"
+LOGOUT_URL = "/"
