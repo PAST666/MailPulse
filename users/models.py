@@ -9,20 +9,21 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 
+from .constants import (
+    MAX_NAME_LENGTH, 
+    TOKEN_EXPIRES_MINUTES, 
+    MAX_PHONE_LENGTH, 
+    MAX_EMAIL_LENGTH,
+    MAX_COUNTRY_LENGTH,
+    ALLOWED_EXTENSIONS,
+)
 from .utils import unique_slugify
-
-MAX_NAME_LENGTH = 150
-TOKEN_EXPIRES_MINUTES = 15
 
 
 class User(AbstractUser):
-    first_name = models.CharField(
-        "Имя", max_length=MAX_NAME_LENGTH, blank=True
-    )
-    last_name = models.CharField(
-        "Фамилия", max_length=MAX_NAME_LENGTH, blank=True
-    )
-    email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
+    first_name = models.CharField("Имя", max_length=MAX_NAME_LENGTH, blank=True)
+    last_name = models.CharField("Фамилия", max_length=MAX_NAME_LENGTH, blank=True)
+    email = models.EmailField("Почта", max_length=MAX_EMAIL_LENGTH, unique=True)
     photo = models.ImageField(
         "Аватарка",
         upload_to="avatars/",
@@ -31,12 +32,10 @@ class User(AbstractUser):
     )
     phone_number = models.CharField(
         "Телефон",
-        max_length=MAX_NAME_LENGTH,
+        max_length=MAX_PHONE_LENGTH,
         blank=True,
     )
-    country = models.CharField(
-        "Страна", max_length=MAX_NAME_LENGTH, blank=True
-    )
+    country = models.CharField("Страна", max_length=MAX_COUNTRY_LENGTH, blank=True)
     is_blocked = models.BooleanField("Заблокирован", default=False)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
@@ -92,21 +91,15 @@ class ActivationToken(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    slug = models.SlugField(
-        "URL", max_length=MAX_NAME_LENGTH, blank=True, unique=True
-    )
+    slug = models.SlugField("URL", max_length=MAX_NAME_LENGTH, blank=True, unique=True)
     avatar = models.ImageField(
         "Аватар",
         upload_to="images/avatars/%Y/%m/%d/",
         default="images/avatars/default.jpg",
         blank=True,
-        validators=[
-            FileExtensionValidator(allowed_extensions=("png", "jpg", "jpeg"))
-        ],
+        validators=[FileExtensionValidator(allowed_extensions=ALLOWED_EXTENSIONS)],
     )
-    bio = models.TextField(
-        "Информация о себе", blank=True
-    )
+    bio = models.TextField("Информация о себе", blank=True)
     birth_date = models.DateField(
         "Дата рождения",
         null=True,
@@ -124,11 +117,11 @@ class Profile(models.Model):
             self.slug = unique_slugify(self, self.user.username)
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return self.user.username
-
     def get_absolute_url(self):
         return reverse("profile_detail", kwargs={"slug": self.slug})
+
+    def __str__(self):
+        return self.user.username
 
 
 @receiver(post_save, sender=User)
