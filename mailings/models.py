@@ -5,19 +5,13 @@ from django.urls import reverse
 
 from .managers import MailingManager, MessageManager, RecipientManager
 
-MAX_NAME_LENGTH = 150
-MAX_TEXT_LENGTH = 255
-
-
-class MailAttemptStatus(models.TextChoices):
-    SUCCESS = ('SUCCESS', 'Успех')
-    FAILED = ('FAILED', 'Неуспешно')
-
-
-class MailingStatus(models.TextChoices):
-    CREATED = ('CREATED', 'Создана')
-    STARTED = ('STARTED', 'Запущена')
-    COMPLETED = ('COMPLETED', 'Завершена')
+from .constants import (
+    MAX_NAME_LENGTH,
+    MAX_EMAIL_LENGTH,
+    MAX_TEXT_LENGTH,
+    MailAttemptStatus,
+    MailingStatus,
+)
 
 
 class Message(models.Model):
@@ -79,39 +73,38 @@ class Mailing(models.Model):
             ("can_block_mailings", "Может отключать все рассылки"),
         ]
 
-    def send_mailing(self):
+    def _validate_owner(self):
         if self.owner.is_blocked:
-            # Создаем запись о неудачной попытке
             MailAttempt.objects.create(
                 status=MailAttemptStatus.FAILED,
                 response="Рассылку нельзя отправить, так как автор заблокирован",
                 mailing=self
             )
             raise PermissionError("Рассылку нельзя отправить, так как автор заблокирован")
-        
+
+    def _validate_mailing(self):
         if self.is_blocked:
-            # Создаем запись о неудачной попытке
             MailAttempt.objects.create(
                 status=MailAttemptStatus.FAILED,
                 response="Рассылку нельзя отправить, так как она заблокирована",
                 mailing=self
             )
             raise PermissionError("Рассылку нельзя отправить, так как она заблокирована")
+
+    def send_mailing(self):
         """
         Метод для отправки писем всем получателям рассылки.
         Создает запись о попытке отправки и меняет статус рассылки.
         """
-        # Меняем статус рассылки на "Запущена"
+        self._validate_owner()
+        self._validate_mailing()
         self.status = MailingStatus.STARTED
         self.save()
 
         success_count = 0
         failed_count = 0
-
-        # Отправляем письма всем получателям
         for recipient in self.recipients.all():
             try:
-                # Отправка письма через Django
                 send_result = send_mail(
                     subject=self.message.title,
                     message=self.message.text,
@@ -120,7 +113,6 @@ class Mailing(models.Model):
                     fail_silently=False,
                 )
 
-                # Если письмо успешно отправлено
                 if send_result:
                     status = MailAttemptStatus.SUCCESS
                     response = "Письмо успешно отправлено"
@@ -136,12 +128,11 @@ class Mailing(models.Model):
                 failed_count += 1
                 print(e)
 
-            # Создаем запись о попытке отправки
-            MailAttempt.objects.create(
+            finally:
+                MailAttempt.objects.create(
                 status=status, response=response, mailing=self
             )
 
-        # Обновляем статус рассылки на "Завершена"
         self.status = MailingStatus.COMPLETED
         self.save()
 
@@ -162,12 +153,15 @@ class Mailing(models.Model):
 
 
 class Recipient(models.Model):
-    email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
+    email = models.EmailField("Почта", max_length=MAX_EMAIL_LENGTH, unique=True)
     name = models.CharField("Имя", max_length=MAX_NAME_LENGTH)
-    middle_name = models.CharField(
-        "Отчество", max_length=MAX_NAME_LENGTH, blank=True
-    )
     surname = models.CharField("Фамилия", max_length=MAX_NAME_LENGTH)
+    middle_name = models.CharField(
+        "Отчество",
+        max_length=MAX_NAME_LENGTH,
+        blank=True,
+        help="обязательно указывается при наличии в паспорте"
+    )
     comment = models.TextField("Комментарий")
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -188,7 +182,7 @@ class Recipient(models.Model):
 
     @property
     def full_name(self):
-        return f"{self.name} {self.middle_name} {self.surname}"
+        return f"{self.surname} {self.name} {self.middle_name}".rstrip()
 
     def __str__(self):
         return self.name
@@ -207,6 +201,7 @@ class MailAttempt(models.Model):
     class Meta:
         verbose_name = "Попытка рассылки"
         verbose_name_plural = "Попытки рассылки"
+        ordering = ("-time_of_attempt",)
 
     def __str__(self):
         return f"Попытка отправки {self.mailing.message.title} - {self.status}"
