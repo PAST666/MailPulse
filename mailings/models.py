@@ -160,7 +160,7 @@ class Recipient(models.Model):
         "Отчество",
         max_length=MAX_NAME_LENGTH,
         blank=True,
-        help="обязательно указывается при наличии в паспорте"
+        help_text="обязательно указывается при наличии в паспорте"
     )
     comment = models.TextField("Комментарий")
     owner = models.ForeignKey(

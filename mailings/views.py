@@ -9,19 +9,21 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 
 from mailings.forms import MailingForm
 
+from .constants import MAX_PAGINATE_BY
 from .models import (MailAttempt, MailAttemptStatus, Mailing, MailingStatus,
                      Message, Recipient)
 from .utils import check_manager
 
+class GetQuerysetMixin:
+    def get_queryset(self):
+        return self.model.objects.for_user(self.request.user)    
 
-class MessageListView(LoginRequiredMixin, ListView):
+class MessageListView(LoginRequiredMixin, ListView, GetQuerysetMixin):
     model = Message
     template_name = "mailings/message_list.html"
     context_object_name = "messages"
-    paginate_by = 20
+    paginate_by = MAX_PAGINATE_BY
 
-    def get_queryset(self):
-        return Message.objects.for_user(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -40,14 +42,12 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class MessageUpdateView(LoginRequiredMixin, UpdateView):
+class MessageUpdateView(LoginRequiredMixin, UpdateView, GetQuerysetMixin):
     model = Message
     template_name = "mailings/message_update.html"
     fields = ["title", "text"]
     success_url = reverse_lazy("mailings:message_list")
 
-    def get_queryset(self):
-        return Message.objects.for_user(self.request.user)
 
     def form_valid(self, form):
         if form.instance.owner != self.request.user:
@@ -55,13 +55,10 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class MessageDeleteView(LoginRequiredMixin, DeleteView):
+class MessageDeleteView(LoginRequiredMixin, DeleteView, GetQuerysetMixin):
     model = Message
     template_name = "mailings/message_delete.html"
     success_url = reverse_lazy("mailings:message_list")
-
-    def get_queryset(self):
-        return Message.objects.for_user(self.request.user)
 
 
 class MailingListView(LoginRequiredMixin, ListView):
@@ -81,14 +78,12 @@ class MailingListView(LoginRequiredMixin, ListView):
         return context
 
 
-class MailingCreateView(LoginRequiredMixin, CreateView):
+class MailingCreateView(LoginRequiredMixin, CreateView, GetQuerysetMixin):
     model = Mailing
     form_class = MailingForm
     template_name = "mailings/mailing_create.html"
     success_url = reverse_lazy("mailings:mailing_list")
 
-    def get_queryset(self):
-        return Mailing.objects.for_user(self.request.user)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -106,14 +101,12 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class MailingUpdateView(LoginRequiredMixin, UpdateView):
+class MailingUpdateView(LoginRequiredMixin, UpdateView, GetQuerysetMixin):
     model = Mailing
     form_class = MailingForm
     template_name = "mailings/mailing_update.html"
     success_url = reverse_lazy("mailings:mailing_list")
 
-    def get_queryset(self):
-        return Mailing.objects.for_user(self.request.user)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -131,13 +124,10 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class MailingDeleteView(LoginRequiredMixin, DeleteView):
+class MailingDeleteView(LoginRequiredMixin, DeleteView, GetQuerysetMixin):
     model = Mailing
     template_name = "mailings/mailing_delete.html"
     success_url = reverse_lazy("mailings:mailing_list")
-
-    def get_queryset(self):
-        return Mailing.objects.for_user(self.request.user)
 
 
 class MailingDetailView(LoginRequiredMixin, DetailView):
@@ -166,14 +156,12 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
         )
 
 
-class RecipientListView(LoginRequiredMixin, ListView):
+class RecipientListView(LoginRequiredMixin, ListView, GetQuerysetMixin):
     model = Recipient
     template_name = "mailings/recipient_list.html"
     context_object_name = "recipients"
     paginate_by = 20
 
-    def get_queryset(self):
-        return Recipient.objects.for_user(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -181,13 +169,11 @@ class RecipientListView(LoginRequiredMixin, ListView):
         return context
 
 
-class RecipientDetailView(LoginRequiredMixin, DetailView):
+class RecipientDetailView(LoginRequiredMixin, DetailView, GetQuerysetMixin):
     model = Recipient
     template_name = "mailings/recipient_list.html"
     context_object_name = "recipients"
 
-    def get_queryset(self):
-        return Recipient.objects.for_user(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -206,14 +192,12 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class RecipientUpdateView(LoginRequiredMixin, UpdateView):
+class RecipientUpdateView(LoginRequiredMixin, UpdateView, GetQuerysetMixin):
     model = Recipient
     template_name = "mailings/recipient_update.html"
     fields = ["email", "name", "middle_name", "surname", "comment"]
     success_url = reverse_lazy("mailings:recipient_list")
 
-    def get_queryset(self):
-        return Recipient.objects.for_user(self.request.user)
 
     def form_valid(self, form):
         if form.instance.owner != self.request.user:
@@ -221,13 +205,10 @@ class RecipientUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class RecipientDeleteView(LoginRequiredMixin, DeleteView):
+class RecipientDeleteView(LoginRequiredMixin, DeleteView, GetQuerysetMixin):
     model = Recipient
     template_name = "mailings/recipient_delete.html"
     success_url = reverse_lazy("mailings:recipient_list")
-
-    def get_queryset(self):
-        return Recipient.objects.for_user(self.request.user)
 
 
 class MailAttemptListView(LoginRequiredMixin, ListView):
