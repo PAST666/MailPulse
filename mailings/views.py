@@ -219,7 +219,6 @@ class MailAttemptListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        # Если пользователь менеджер, показываем все попытки рассылок
         if check_manager(user):
             return (
                 MailAttempt.objects.all()
@@ -227,7 +226,6 @@ class MailAttemptListView(LoginRequiredMixin, ListView):
                 .order_by("-time_of_attempt")
             )
 
-        # Иначе показываем только попытки рассылок, принадлежащих пользователю
         return (
             MailAttempt.objects.filter(mailing__owner=user)
             .select_related("mailing")
@@ -240,7 +238,6 @@ class MailAttemptListView(LoginRequiredMixin, ListView):
         is_manager = check_manager(user)
         context["manager_group_members"] = is_manager
 
-        # Статистика для текущего пользователя
         user_attempts = MailAttempt.objects.filter(mailing__owner=user)
         context["user_successful_attempts"] = user_attempts.filter(
             status=MailAttemptStatus.SUCCESS
@@ -250,7 +247,6 @@ class MailAttemptListView(LoginRequiredMixin, ListView):
         ).count()
         context["user_total_attempts"] = user_attempts.count()
 
-        # Статистика для всех пользователей (видна только менеджерам)
         if is_manager:
             all_attempts = MailAttempt.objects.all()
             context["all_successful_attempts"] = all_attempts.filter(
@@ -298,7 +294,6 @@ class MailingBlockView(LoginRequiredMixin, View):
         self.__user_is_manager(request.user)
         self.__is_not_owner(request.user, mailing)
 
-        # Блокируем рассылку
         mailing.is_blocked = True
         mailing.save()
         return redirect(self.success_url)
