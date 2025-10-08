@@ -3,56 +3,55 @@ from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 
-from .managers import MailingManager, MessageManager, RecipientManager
-
 from .constants import (
-    MAX_NAME_LENGTH,
     MAX_EMAIL_LENGTH,
+    MAX_NAME_LENGTH,
     MAX_TEXT_LENGTH,
     MailAttemptStatus,
     MailingStatus,
 )
+from .managers import MailingManager, MessageManager, RecipientManager
 
 
 class Message(models.Model):
-    title = models.CharField('Заголовок', max_length=MAX_NAME_LENGTH)
-    text = models.CharField('Текст сообщения', max_length=MAX_TEXT_LENGTH)
+    title = models.CharField("Заголовок", max_length=MAX_NAME_LENGTH)
+    text = models.CharField("Текст сообщения", max_length=MAX_TEXT_LENGTH)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='messages',
+        related_name="messages",
     )
     permissions = [
-        ('can_view_all_messages', 'Может просматривать все сообщения'),
+        ("can_view_all_messages", "Может просматривать все сообщения"),
     ]
     objects = MessageManager()
 
     class Meta:
-        verbose_name = 'Сообщение'
-        verbose_name_plural = 'Сообщения'
-        ordering = ('title',)
+        verbose_name = "Сообщение"
+        verbose_name_plural = "Сообщения"
+        ordering = ("title",)
 
     def get_absolute_url_update(self):
-        return reverse('mailings:message_update', kwargs={'pk': self.pk})
+        return reverse("mailings:message_update", kwargs={"pk": self.pk})
 
     def get_absolute_url_delete(self):
-        return reverse('mailings:message_delete', kwargs={'pk': self.pk})
+        return reverse("mailings:message_delete", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title
 
 
 class Mailing(models.Model):
-    time_of_first_send = models.DateTimeField('Дата и время первой отправки')
-    time_of_last_send = models.DateTimeField('Дата и время последней отправки')
+    time_of_first_send = models.DateTimeField("Дата и время первой отправки")
+    time_of_last_send = models.DateTimeField("Дата и время последней отправки")
     status = models.CharField(
-        'Статус', choices=MailingStatus.choices, max_length=MAX_NAME_LENGTH
+        "Статус", choices=MailingStatus.choices, max_length=MAX_NAME_LENGTH
     )
     message = models.ForeignKey(
-        'Message', on_delete=models.CASCADE, verbose_name='Сообщение'
+        "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
     )
     recipients = models.ManyToManyField(
-        'Recipient', related_name='mailings', verbose_name='Получатели'
+        "Recipient", related_name="mailings", verbose_name="Получатели"
     )
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -77,19 +76,25 @@ class Mailing(models.Model):
         if self.owner.is_blocked:
             MailAttempt.objects.create(
                 status=MailAttemptStatus.FAILED,
-                response="Рассылку нельзя отправить, так как автор заблокирован",
-                mailing=self
+                response=("Рассылку нельзя отправить, так "
+                          "как автор заблокирован"),
+                mailing=self,
             )
-            raise PermissionError("Рассылку нельзя отправить, так как автор заблокирован")
+            raise PermissionError(
+                "Рассылку нельзя отправить, так как автор заблокирован"
+            )
 
     def _validate_mailing(self):
         if self.is_blocked:
             MailAttempt.objects.create(
                 status=MailAttemptStatus.FAILED,
-                response="Рассылку нельзя отправить, так как она заблокирована",
-                mailing=self
+                response=("Рассылку нельзя отправить, "
+                          "так как она заблокирована"),
+                mailing=self,
             )
-            raise PermissionError("Рассылку нельзя отправить, так как она заблокирована")
+            raise PermissionError(
+                "Рассылку нельзя отправить, так как она заблокирована"
+            )
 
     def send_mailing(self):
         """
@@ -153,14 +158,16 @@ class Mailing(models.Model):
 
 
 class Recipient(models.Model):
-    email = models.EmailField("Почта", max_length=MAX_EMAIL_LENGTH, unique=True)
+    email = models.EmailField(
+        "Почта", max_length=MAX_EMAIL_LENGTH, unique=True
+    )
     name = models.CharField("Имя", max_length=MAX_NAME_LENGTH)
     surname = models.CharField("Фамилия", max_length=MAX_NAME_LENGTH)
     middle_name = models.CharField(
         "Отчество",
         max_length=MAX_NAME_LENGTH,
         blank=True,
-        help_text="обязательно указывается при наличии в паспорте"
+        help_text="обязательно указывается при наличии в паспорте",
     )
     comment = models.TextField("Комментарий")
     owner = models.ForeignKey(

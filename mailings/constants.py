@@ -7,11 +7,11 @@ MAX_PAGINATE_BY = 20
 
 
 class MailAttemptStatus(models.TextChoices):
-    SUCCESS = ('SUCCESS', 'Успех')
-    FAILED = ('FAILED', 'Неуспешно')
+    SUCCESS = ("SUCCESS", "Успех")
+    FAILED = ("FAILED", "Неуспешно")
 
 
 class MailingStatus(models.TextChoices):
-    CREATED = ('CREATED', 'Создана')
-    STARTED = ('STARTED', 'Запущена')
-    COMPLETED = ('COMPLETED', 'Завершена')
+    CREATED = ("CREATED", "Создана")
+    STARTED = ("STARTED", "Запущена")
+    COMPLETED = ("COMPLETED", "Завершена")

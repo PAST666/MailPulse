@@ -1,30 +1,41 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  UpdateView, View)
-
-from mailings.forms import MailingForm
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+    View,
+)
 
 from .constants import MAX_PAGINATE_BY
-from .models import (MailAttempt, MailAttemptStatus, Mailing, MailingStatus,
-                     Message, Recipient)
+from .models import (
+    MailAttempt,
+    MailAttemptStatus,
+    Mailing,
+    MailingStatus,
+    Message,
+    Recipient,
+)
 from .utils import check_manager
+from mailings.forms import MailingForm
+
 
 class GetQuerysetMixin:
     def get_queryset(self):
-        return self.model.objects.for_user(self.request.user)    
+        return self.model.objects.for_user(self.request.user)
+
 
 class MessageListView(LoginRequiredMixin, ListView, GetQuerysetMixin):
     model = Message
     template_name = "mailings/message_list.html"
     context_object_name = "messages"
     paginate_by = MAX_PAGINATE_BY
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -48,7 +59,6 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView, GetQuerysetMixin):
     template_name = "mailings/message_update.html"
     fields = ["title", "text"]
     success_url = reverse_lazy("mailings:message_list")
-
 
     def form_valid(self, form):
         if form.instance.owner != self.request.user:
@@ -85,7 +95,6 @@ class MailingCreateView(LoginRequiredMixin, CreateView, GetQuerysetMixin):
     template_name = "mailings/mailing_create.html"
     success_url = reverse_lazy("mailings:mailing_list")
 
-
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields["message"].queryset = Message.objects.for_user(
@@ -107,7 +116,6 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView, GetQuerysetMixin):
     form_class = MailingForm
     template_name = "mailings/mailing_update.html"
     success_url = reverse_lazy("mailings:mailing_list")
-
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -165,7 +173,6 @@ class RecipientListView(LoginRequiredMixin, ListView, GetQuerysetMixin):
     context_object_name = "recipients"
     paginate_by = 20
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
@@ -176,7 +183,6 @@ class RecipientDetailView(LoginRequiredMixin, DetailView, GetQuerysetMixin):
     model = Recipient
     template_name = "mailings/recipient_list.html"
     context_object_name = "recipients"
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -200,7 +206,6 @@ class RecipientUpdateView(LoginRequiredMixin, UpdateView, GetQuerysetMixin):
     template_name = "mailings/recipient_update.html"
     fields = ["email", "name", "middle_name", "surname", "comment"]
     success_url = reverse_lazy("mailings:recipient_list")
-
 
     def form_valid(self, form):
         if form.instance.owner != self.request.user:
@@ -309,7 +314,7 @@ class MailingUnblockView(LoginRequiredMixin, View):
     def __user_is_manager(self, user):
         if not check_manager(user):
             raise PermissionDenied("У вас нет прав для блокировки рассылок")
-    
+
     def __is_not_owner(self, user, mailing):
         if user == mailing.owner:
             raise PermissionDenied("Вы не можете заблокировать свою рассылку.")

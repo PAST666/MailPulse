@@ -113,11 +113,11 @@ class Command(BaseCommand):
 
     def add_argumetns(self, parser):
         parser.add_argument(
-                    'usernumbers',
-                    nargs="*",
-                    type=int,
-                    help='Количество пользователей для создания'
-                )
+            "usernumbers",
+            nargs="*",
+            type=int,
+            help="Количество пользователей для создания",
+        )
 
     def handle(self, *args, **options):
         count = options["usernumbers"]
@@ -125,4 +125,3 @@ class Command(BaseCommand):
             self.create_recipients(user)
             self.create_messages(user)
             self.create_mailings(user)
-            

@@ -1,21 +1,22 @@
-from django.urls import path, include
+from django.urls import include, path
+
 from .views import (
-    MessageListView,
-    MessageUpdateView,
-    MessageDeleteView,
-    MessageCreateView,
-    MailingListView,
-    MailingUpdateView,
+    MailAttemptListView,
+    MailingBlockView,
     MailingCreateView,
     MailingDeleteView,
-    RecipientListView,
-    RecipientCreateView,
-    RecipientUpdateView,
-    RecipientDeleteView,
-    MailAttemptListView,
     MailingDetailView,
-    MailingBlockView,
+    MailingListView,
     MailingUnblockView,
+    MailingUpdateView,
+    MessageCreateView,
+    MessageDeleteView,
+    MessageListView,
+    MessageUpdateView,
+    RecipientCreateView,
+    RecipientDeleteView,
+    RecipientListView,
+    RecipientUpdateView,
 )
 
 app_name = "mailings"
