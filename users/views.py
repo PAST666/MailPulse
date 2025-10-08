@@ -4,29 +4,35 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import (
-    PasswordResetConfirmView as BasePasswordResetConfirmView
+    PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
 from django.contrib.auth.views import (
-    PasswordResetView as BasePasswordResetView
+    PasswordResetView as BasePasswordResetView,
 )
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.db import transaction
-from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import (CreateView, DetailView, TemplateView,
-                                  UpdateView)
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    TemplateView,
+    UpdateView,
+)
 from django.views.generic.edit import UpdateView
 
-from mailings.utils import check_manager
-
-from .forms import (CustomLoginForm, CustomUserCreationForm, ProfileUpdateForm,
-                    UserUpdateForm)
+from .forms import (
+    CustomLoginForm,
+    CustomUserCreationForm,
+    ProfileUpdateForm,
+    UserUpdateForm,
+)
 from .models import ActivationToken, Profile, User
+from mailings.utils import check_manager
 
 
 class CustomLoginView(LoginView):
@@ -94,17 +100,13 @@ class VerifyEmailView(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
             user_token = self.kwargs.get("user_token")
-            token = ActivationToken.objects.get(
-                token=user_token
-            )
+            token = ActivationToken.objects.get(token=user_token)
         except ActivationToken.DoesNotExist:
             return self.render_to_response(
                 {"error": "Недействительная ссылка"}
             )
         if not token.token_is_valid():
-            return self.render_to_response(
-                {"error": "Ссылка истекла"}
-            )
+            return self.render_to_response({"error": "Ссылка истекла"})
 
         user = token.user
         user.is_active = True
@@ -176,7 +178,7 @@ class CustomPasswordResetConfirmView(BasePasswordResetConfirmView):
     success_url = reverse_lazy("users:password_reset_complete")
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class BlockUserView(View):
     template_name = "users/block_user.html"
     success_url = reverse_lazy("mailings:recipient_list")
@@ -197,7 +199,6 @@ class BlockUserView(View):
                 request, self.template_name, context={"blocked_user": user}
             )
         return redirect(self.success_url)
-    
 
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs.get("user_id")
