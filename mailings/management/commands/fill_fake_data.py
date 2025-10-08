@@ -14,15 +14,15 @@ fake_data = Faker()
 class Command(BaseCommand):
     help = "Заполнение БД случайными данными"
 
-    def create_users(self):
+    def create_users(self, count):
         created_users = []
 
-        for _ in range(10):
+        for _ in range(count):
             username = fake_data.user_name()
             if User.objects.filter(username=username).exists():
                 self.stdout.write(
                     self.style.WARNING(
-                        f"Пользователь уже существует, пропускаем"
+                        "Пользователь уже существует, пропускаем"
                     )
                 )
                 continue
@@ -58,7 +58,8 @@ class Command(BaseCommand):
             except IntegrityError:
                 self.stdout.write(
                     self.style.WARNING(
-                        f"Не удалось создать получателя - такой пользователь уже существует"
+                        "Не удалось создать получателя - такой"
+                        " пользователь уже существует"
                     )
                 )
 
@@ -79,7 +80,8 @@ class Command(BaseCommand):
         if not messages.exists() or not recipients.exists():
             self.stdout.write(
                 self.style.WARNING(
-                    "Невозможно создать рассылку, так как нет сообщений или получателей"
+                    "Невозможно создать рассылку, так как нет "
+                    "сообщений или получателей"
                 )
             )
             return
@@ -109,8 +111,18 @@ class Command(BaseCommand):
                 self.style.SUCCESS(f"Рассылка {mailing} успешно создана")
             )
 
+    def add_argumetns(self, parser):
+        parser.add_argument(
+                    'usernumbers',
+                    nargs="*",
+                    type=int,
+                    help='Количество пользователей для создания'
+                )
+
     def handle(self, *args, **options):
-        for user in self.create_users():
+        count = options["usernumbers"]
+        for user in self.create_users(count):
             self.create_recipients(user)
             self.create_messages(user)
             self.create_mailings(user)
+            

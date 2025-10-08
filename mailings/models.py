@@ -130,8 +130,8 @@ class Mailing(models.Model):
 
             finally:
                 MailAttempt.objects.create(
-                status=status, response=response, mailing=self
-            )
+                    status=status, response=response, mailing=self
+                )
 
         self.status = MailingStatus.COMPLETED
         self.save()

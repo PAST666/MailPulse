@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -141,11 +142,13 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["manager_group_members"] = check_manager(self.request.user)
+        # context["recepients_page"] = value
         # TODO реализовать пагинацию для получателей
         return context
 
     def post(self, request, *args, **kwargs):
         mailing = self.get_object()
+        self.object = mailing
         if mailing.status == MailingStatus.CREATED:
             mailing.send_mailing()
         return HttpResponseRedirect(self.get_success_url())

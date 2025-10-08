@@ -33,7 +33,6 @@ class MailAttemptAdmin(admin.ModelAdmin):
     )
     search_fields = ("status", "answer")
 
-
 @admin.register(Mailing)
 class MailingAdmin(admin.ModelAdmin):
     list_display = (
@@ -44,3 +43,5 @@ class MailingAdmin(admin.ModelAdmin):
         "is_blocked",
     )
     search_fields = ("status", "message")
+    list_filter = ("status",)
+
