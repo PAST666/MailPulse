@@ -1,6 +1,5 @@
 import uuid
 
-from datetime import timedelta
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
 from django.db import models
@@ -9,10 +8,15 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 
+from .constants import (
+    ALLOWED_EXTENSIONS,
+    MAX_COUNTRY_LENGTH,
+    MAX_EMAIL_LENGTH,
+    MAX_NAME_LENGTH,
+    MAX_PHONE_LENGTH,
+    TOKEN_EXPIRES_MINUTES,
+)
 from .utils import unique_slugify
-
-MAX_NAME_LENGTH = 150
-TOKEN_EXPIRES_MINUTES = 15
 
 
 class User(AbstractUser):
@@ -22,7 +26,9 @@ class User(AbstractUser):
     last_name = models.CharField(
         "Фамилия", max_length=MAX_NAME_LENGTH, blank=True
     )
-    email = models.EmailField("Почта", max_length=MAX_NAME_LENGTH, unique=True)
+    email = models.EmailField(
+        "Почта", max_length=MAX_EMAIL_LENGTH, unique=True
+    )
     photo = models.ImageField(
         "Аватарка",
         upload_to="avatars/",
@@ -31,11 +37,11 @@ class User(AbstractUser):
     )
     phone_number = models.CharField(
         "Телефон",
-        max_length=MAX_NAME_LENGTH,
+        max_length=MAX_PHONE_LENGTH,
         blank=True,
     )
     country = models.CharField(
-        "Страна", max_length=MAX_NAME_LENGTH, blank=True
+        "Страна", max_length=MAX_COUNTRY_LENGTH, blank=True
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
     USERNAME_FIELD = "username"
@@ -101,12 +107,10 @@ class Profile(models.Model):
         default="images/avatars/default.jpg",
         blank=True,
         validators=[
-            FileExtensionValidator(allowed_extensions=("png", "jpg", "jpeg"))
+            FileExtensionValidator(allowed_extensions=ALLOWED_EXTENSIONS)
         ],
     )
-    bio = models.TextField(
-        "Информация о себе", blank=True
-    )
+    bio = models.TextField("Информация о себе", blank=True)
     birth_date = models.DateField(
         "Дата рождения",
         null=True,
@@ -124,11 +128,11 @@ class Profile(models.Model):
             self.slug = unique_slugify(self, self.user.username)
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return self.user.username
-
     def get_absolute_url(self):
         return reverse("profile_detail", kwargs={"slug": self.slug})
+
+    def __str__(self):
+        return self.user.username
 
 
 @receiver(post_save, sender=User)

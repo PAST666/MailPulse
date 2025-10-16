@@ -1,0 +1,108 @@
+[project]
+name = "mailpulse"
+version = "0.1.0"
+description = "Учебный проект рассылки сообщений"
+authors = [
+    {name = "PAST666",email = "alex66651@yandex.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "django (>=5.1.7,<6.0.0)",
+    "django-crispy-forms (>=2.3,<3.0)",
+    "colorama (>=0.4.6,<0.5.0)",
+    "pillow (>=11.1.0,<12.0.0)",
+    "python-decouple (>=3.8,<4.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "django-bootstrap5 (>=25.1,<26.0)",
+    "pytils (>=0.4.1,<0.5.0)",
+]
+
+[dependency-groups]
+dev = [
+    "flake8 (>=7.2.0,<8.0.0)",
+    "flake8-pyproject (>=1.2.3,<2.0.0)",
+    "black (>=25.1.0,<26.0.0)",
+    "isort (>=6.1.0,<7.0.0)",
+    "django (>=5.1.7,<6.0.0)"
+]
+tests = [
+    "pytest (>=8.3.5,<9.0.0)",
+    "faker (>=37.1.0,<38.0.0)",
+    "pytest-django (>=4.11.1,<5.0.0)",
+    "pytest-mock (>=3.14.1,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.flake8]
+max-line-length = 79
+max-complexity = 6
+count = true
+per-file-ignores = [
+    "__init__.py:F401,F403",
+    "**/settings.py:E501"
+]
+extend-ignore = [
+    "E203",
+    "E231",
+    "E241",
+    "W503",
+    "F811",
+    "R503",
+    "R504",
+    "R505"
+]
+exclude = [
+    ".git/",
+    "__pycache__/",
+    "**/migrations/",
+    "manage.py",
+    "settings.py",
+    "env/",
+    "venv/",
+    ".env/",
+    ".venv/",
+    "tests/",
+    ".pytest_cache",
+    ".vscode/",
+    ".idea/"
+]
+
+[tool.black]
+line-length = 79
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | __pycache__
+  | \.pytest_cache
+  | \.vscode
+  | \.idea
+  | venv
+  | env
+  | \.venv
+  | \.env
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 79
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+known_local_folder = [
+    "mailings",
+    "users",
+    "mailpulse",
+]
+skip = ["migrations"]
+

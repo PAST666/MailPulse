@@ -1,22 +1,20 @@
 from django.db import models
 
 
-class MessageManager(models.Manager):
+class BaseManagerMixin(models.Manager):
     def for_user(self, user) -> models.QuerySet:
         if user.groups.filter(name="Менеджеры").exists():
             return self.all()
         return self.filter(owner=user)
 
 
-class MailingManager(models.Manager):
-    def for_user(self, user) -> models.QuerySet:
-        if user.groups.filter(name="Менеджеры").exists():
-            return self.all()
-        return self.filter(owner=user)
+class MessageManager(BaseManagerMixin):
+    pass
 
 
-class RecipientManager(models.Manager):
-    def for_user(self, user) -> models.QuerySet:
-        if user.groups.filter(name="Менеджеры").exists():
-            return self.all()
-        return self.filter(owner=user)
+class MailingManager(BaseManagerMixin):
+    pass
+
+
+class RecipientManager(BaseManagerMixin):
+    pass

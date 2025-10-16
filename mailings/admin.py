@@ -44,3 +44,4 @@ class MailingAdmin(admin.ModelAdmin):
         "is_blocked",
     )
     search_fields = ("status", "message")
+    list_filter = ("status",)

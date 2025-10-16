@@ -9,13 +9,12 @@ class MainView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
-            context["total_mailings"] = Mailing.objects.for_user(
+            mailings = Mailing.objects.for_user(
                 self.request.user
-            ).count()
+            )
+            context["total_mailings"] = mailings.count()
             context["active_mailings"] = (
-                Mailing.objects.for_user(self.request.user)
-                .filter(status=MailingStatus.STARTED)
-                .count()
+                mailings.filter(status=MailingStatus.STARTED).count()
             )
             context["unique_recipients"] = (
                 Recipient.objects.for_user(self.request.user)

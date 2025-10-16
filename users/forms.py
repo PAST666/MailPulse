@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import (
     AuthenticationForm,
-    UserCreationForm,
     PasswordChangeForm,
+    UserCreationForm,
 )
 from django.core.exceptions import ValidationError
-from .models import User, Profile
+
+from .models import Profile, User
 
 
 class CustomLoginForm(AuthenticationForm):
