@@ -6,9 +6,11 @@ exclude =
     .venv,
     env,
     migrations,
+    tests,
     settings.py,
     manage.py,
     venv/
+inline-quotes = "
 ignore =
     E501,
     W503,
