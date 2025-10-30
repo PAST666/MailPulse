@@ -120,7 +120,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        count = options["usernumbers"]
+        count = options.get("usernumbers", 10)
         for user in self.create_users(count):
             self.create_recipients(user)
             self.create_messages(user)
