@@ -30,7 +30,7 @@ jobs:
           python manage.py makemigrations
           python manage.py migrate
           python manage.py create_managers_group
-          python manage.py fill_fake_data 15
+          python manage.py fill_fake_data
 
       - name: Check flake8
         run: |

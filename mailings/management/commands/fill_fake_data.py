@@ -113,8 +113,8 @@ class Command(BaseCommand):
 
     def add_argumetns(self, parser):
         parser.add_argument(
-            "usernumbers",
-            nargs="*",
+            "--userscount",
+            default=10,
             type=int,
             help="Количество пользователей для создания",
         )
