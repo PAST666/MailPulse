@@ -23,7 +23,6 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
-from django.views.generic.edit import UpdateView
 
 from .forms import (
     CustomLoginForm,
