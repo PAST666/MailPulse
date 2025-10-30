@@ -10,11 +10,11 @@ exclude =
     manage.py,
     venv/
 ignore =
-    E501,  # Line too long (handled by max-line-length)
-    W503,  # Line break before binary operator
-    E203,  # Whitespace before ':'
-    DJ00,  # Example of a flake8-django specific error prefix to ignore
-    DJ10,  # Another example of a flake8-django specific error
+    E501,
+    W503,
+    E203,
+    DJ00,
+    DJ10,
 per-file-ignores =
     */settings.py:E501,W292
     */migrations/*.py:E501,W292
